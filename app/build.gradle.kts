@@ -12,11 +12,12 @@ plugins {
 
 android {
     namespace = "com.example.samplecleanarchitecture"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.samplecleanarchitecture"
         minSdk = 29
+        //noinspection OldTargetApi
         targetSdk = 36
         versionCode = 100
         versionName = "1.0.0"
@@ -133,7 +134,6 @@ dependencies {
     // Navigation Component cho Kotlin
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-
 
 
 

@@ -12,6 +12,7 @@ import com.example.samplecleanarchitecture.utils.CheckInternet
 
 fun View.setOnSingleListener(
     duration: Long = 300L,
+    internet : Boolean = true,
     block: (View) -> Unit,
 ) {
     var lastClickTime = 0L
@@ -19,7 +20,7 @@ fun View.setOnSingleListener(
         val currentTime = SystemClock.elapsedRealtime()
         if(currentTime - lastClickTime >= duration){
             lastClickTime = currentTime
-            if(!CheckInternet.haveNetworkConnection(context)){
+            if(!CheckInternet.haveNetworkConnection(context) && internet){
                 val intent = Intent(context, NoInternetActivity::class.java)
                 context.startActivity(intent)
             }

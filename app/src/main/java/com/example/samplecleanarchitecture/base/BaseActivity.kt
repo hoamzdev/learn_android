@@ -13,7 +13,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) :
     AppCompatActivity() {
@@ -62,9 +67,7 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
 
     private fun hideNavigationBarInLowerAndroid() {
         window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 
     private fun drawBelowStatusBar() {
@@ -74,10 +77,7 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
             val statusBarsInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             val insetBottom = if (imeVisible) imeInsets.bottom else statusBarsInsets.bottom
             v.setPadding(
-                statusBarsInsets.left,
-                statusBarsInsets.top,
-                statusBarsInsets.right,
-                insetBottom
+                statusBarsInsets.left, statusBarsInsets.top, statusBarsInsets.right, insetBottom
             )
             insets
         }
@@ -87,14 +87,24 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    protected fun log(message : String){
-        Log.d("TEST",message)
+    protected fun log(message: String) {
+        Log.d("TEST", message)
     }
 
-    open fun showActivity(activity: Class<*>, bundle: Bundle?) {
+    open fun showActivity(activity: Class<*>, bundle: Bundle? = null) {
         val intent = Intent(this, activity)
         intent.putExtras(bundle ?: Bundle())
         startActivity(intent)
+    }
+
+    open fun observerData(
+        block: suspend CoroutineScope.() -> Unit = {},
+    ) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                block()
+            }
+        }
     }
 
     open fun onFinish() {

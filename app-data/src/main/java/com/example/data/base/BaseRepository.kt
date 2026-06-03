@@ -1,6 +1,7 @@
 package com.example.data.base
 
 import com.example.domain.utils.ApiResult
+import com.example.domain.utils.DataError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,13 +20,21 @@ abstract class BaseRepository {
                 ApiResult.Success(request())
             } catch (e: HttpException) {
                 ApiResult.Error(
-                    e.code(),
-                    e.message(),
-                    errorBody = e.response()?.errorBody()?.toString()
+                    DataError(
+                        e.code(),
+                        e.message(),
+                        errorBody = e.response()?.errorBody()?.string()
+                    )
                 )
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                ApiResult.Error(null, e.message)
+                ApiResult.Error(
+                    DataError(
+                        null,
+                        null,
+                        errorBody = e.message.toString()
+                    )
+                )
             }
         }
     }

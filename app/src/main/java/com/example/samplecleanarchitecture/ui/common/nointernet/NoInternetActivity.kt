@@ -6,7 +6,7 @@ import android.util.Log
 import com.example.samplecleanarchitecture.base.BaseActivity
 import com.example.samplecleanarchitecture.component.setOnSingleListener
 import com.example.samplecleanarchitecture.databinding.ActivityNoInternetBinding
-import com.example.samplecleanarchitecture.ui.home.HomeActivity
+import com.example.samplecleanarchitecture.ui.main.MainActivity
 import com.example.samplecleanarchitecture.utils.CheckInternet
 
 class NoInternetActivity :
@@ -20,7 +20,7 @@ class NoInternetActivity :
                 startActivity(intent)
             }
             else{
-                val intent = Intent(this, HomeActivity::class.java)
+                val intent = Intent(this@NoInternetActivity, MainActivity::class.java)
                 startActivity(intent)
                 finishAffinity()
             }
@@ -30,10 +30,10 @@ class NoInternetActivity :
 
     override fun onResume() {
         super.onResume()
-//        if(CheckInternet.haveNetworkConnection(this)){
-//            val intent = Intent(this, HomeActivity::class.java)
-//            startActivity(intent)
-//            finishAffinity()
-//        }
+        if(CheckInternet.haveNetworkConnection(this)){
+            val intent = Intent(this@NoInternetActivity, MainActivity::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
     }
 }

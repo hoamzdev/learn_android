@@ -1,29 +1,27 @@
 package com.example.samplecleanarchitecture.di
 
-import com.example.data.api.CompanyApi
-import com.example.data.local.dao.DepartmentDao
-import com.example.data.repository.CompanyRepositoryImpl
-import com.example.data.repository.DepartmentRepositoryImpl
-import com.example.domain.repository.CompanyRepository
-import com.example.domain.repository.DepartmentLocalRepository
+import com.example.data.repository.AuthRepositoryImpl
+import com.example.data.repository.UserRepositoryImpl
+import com.example.domain.repository.AuthRepository
+import com.example.domain.repository.UserRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
-    @Provides
+abstract class RepositoryModule {
+    @Binds
     @Singleton
-    fun provideCompanyRepository(api: CompanyApi): CompanyRepository {
-        return CompanyRepositoryImpl(api)
-    }
+    abstract fun provideAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl,
+    ): AuthRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideDepartmentLocalRepository(dao: DepartmentDao): DepartmentLocalRepository {
-        return DepartmentRepositoryImpl(dao)
-    }
+    abstract fun provideUserRepository(
+        userRepositoryImpl: UserRepositoryImpl,
+    ): UserRepository
 }
