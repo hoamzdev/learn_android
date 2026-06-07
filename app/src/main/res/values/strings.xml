@@ -8,6 +8,7 @@
     <string name="try_again">Try Again</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login">Login</string>
+    <string name="show">Show</string>
     <string name="get">GET</string>
+    <string name="sub_title">This subheader can be customized to include whatever text you\'d like. This bottom sheet is great for promotional content.</string>
 </resources>

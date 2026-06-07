@@ -35,7 +35,7 @@ fun View.setOnClickShrinkListener(
 
 private fun View.buildShinkAnimation(): Animator {
     val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, SHRINK_VALUE)
-    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, SHRINK_VALUE)
+    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, SHRINK_VALUE)
     this.apply {
         val animation = ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY)
         animation.duration = DURATION_ANIMATION
@@ -45,7 +45,7 @@ private fun View.buildShinkAnimation(): Animator {
 
 private fun View.buildGrowAnimation(): Animator {
     val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SHRINK_VALUE, 1f)
-    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_X, SHRINK_VALUE, 1f)
+    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SHRINK_VALUE, 1f)
     this.apply {
         val animation = ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY)
         animation.duration = DURATION_ANIMATION

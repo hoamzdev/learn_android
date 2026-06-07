@@ -88,7 +88,7 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
     }
 
     protected fun log(message: String) {
-        Log.d("TEST", message)
+        Log.e("TEST", message)
     }
 
     open fun showActivity(activity: Class<*>, bundle: Bundle? = null) {

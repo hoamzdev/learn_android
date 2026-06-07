@@ -6,6 +6,8 @@
 
         <!-- Bật tính năng tự động đảo màu chữ/icon theo nền -->
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        
+        <item name="popupWindowStyle">@style/Widget.App.CustomPopupMenu</item>
     </style>
 
     <style name="Theme.SampleCleanArchitecture" parent="Base.Theme.SampleCleanArchitecture" />
@@ -13,5 +15,10 @@
     <style name="full_screen_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
+    </style>
+
+    <style name="Widget.App.CustomPopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup_rounded</item>
+        <item name="android:minWidth">220dp</item>
     </style>
 </resources>

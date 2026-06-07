@@ -19,7 +19,7 @@ abstract class BasePopupWindow<VB : ViewBinding>(
         val inflater = LayoutInflater.from(context)
         binding = bindingInflater(inflater)
         contentView = binding.root
-        width = ViewGroup.LayoutParams.MATCH_PARENT
+        width = ViewGroup.LayoutParams.WRAP_CONTENT
         height = ViewGroup.LayoutParams.WRAP_CONTENT
         isFocusable = true
 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardSortType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sizesp16"
+        android:layout_marginTop="@dimen/size2"
+        android:layout_marginEnd="@dimen/size16"
+        android:layout_marginBottom="@dimen/size2"
+        android:elevation="@dimen/size10"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/size13"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="#1B000000"
+        app:strokeWidth="0.8dp">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/size10"
+            android:paddingVertical="@dimen/size16"
+            android:paddingStart="@dimen/size12"
+            android:paddingEnd="@dimen/size8">
+
+            <TextView
+                android:id="@+id/tvSortByDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/size10"
+                android:text="Sort By Date"
+                android:textColor="#171B16"
+                android:textSize="@dimen/sizesp14"
+                app:layout_constraintEnd_toStartOf="@id/iv_check_1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_check_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortByDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortByDate" />
+
+            <View
+                android:id="@+id/btnSortByDate"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortByDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortByDate" />
+
+
+            <TextView
+                android:id="@+id/tvSortByCommonName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size12"
+                android:layout_marginEnd="@dimen/size10"
+                android:text="Sort By Common Name"
+                android:textColor="#171B16"
+                android:textSize="@dimen/sizesp14"
+                app:layout_constraintEnd_toStartOf="@id/iv_check_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnSortByDate" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_check_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortByCommonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortByCommonName" />
+
+            <View
+                android:id="@+id/btnSortByCommonName"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortByCommonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortByCommonName" />
+
+
+            <TextView
+                android:id="@+id/tvSortScienceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size12"
+                android:layout_marginEnd="@dimen/size10"
+                android:text="Sort By Science Name"
+                android:textColor="#171B16"
+                android:textSize="@dimen/sizesp14"
+                app:layout_constraintEnd_toStartOf="@id/iv_check_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSortByCommonName" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_check_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortScienceName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortScienceName" />
+
+            <View
+                android:id="@+id/btnSortScienceName"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvSortScienceName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvSortScienceName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
