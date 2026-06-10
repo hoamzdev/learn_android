@@ -44,7 +44,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
         sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
-            override fun onStateChanged(view: View, newState: Int) {
+            override fun onStateChanged(p0: View, newState: Int) {
                 when(newState){
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         log("STATE_HIDDEN")
@@ -55,9 +55,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     else -> {}
                 }
             }
+            override fun onSlide(p0: View, p1: Float) {
 
-            override fun onSlide(view: View, offSet : Float) {}
-
+            }
         })
 
     }

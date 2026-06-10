@@ -24,7 +24,7 @@
             android:name=".ui.main.MainActivity2"
             android:exported="false" />
         <activity
-            android:name=".ui.main.MainActivity3"
+            android:name=".ui.PhotoActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,6 +37,19 @@
             android:name=".ui.common.nointernet.NoInternetActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.main.MainActivity3"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
+
+
+<!--
+    pickMediaLauncherINVSB1.launch(
+    PickVisualMediaRequest(
+    ActivityResultContracts.PickVisualMedia.ImageOnly
+    )
+    )
+    }-->
