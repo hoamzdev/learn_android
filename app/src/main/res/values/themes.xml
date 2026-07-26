@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.SampleCleanArchitecture" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.testBaseApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Sử dụng màu colorSurface của hệ thống: Tự trắng khi Sáng, tự đen khi Tối -->
         <item name="android:statusBarColor">?attr/colorSurface</item>
 
@@ -10,7 +10,7 @@
         <item name="popupWindowStyle">@style/Widget.App.CustomPopupMenu</item>
     </style>
 
-    <style name="Theme.SampleCleanArchitecture" parent="Base.Theme.SampleCleanArchitecture" />
+    <style name="Theme.testBaseApp" parent="Base.Theme.testBaseApp" />
 
     <style name="full_screen_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>

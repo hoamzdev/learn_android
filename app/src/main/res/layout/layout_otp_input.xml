@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/size10"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/size26"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edt_one"
+            style="@style/TextView.Subtext.14"
+            android:layout_width="@dimen/size45"
+            android:layout_height="@dimen/size45"
+            android:background="@drawable/bg_edt_12"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:maxLines="1"
+            android:textSize="@dimen/sizesp16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edt_two"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edt_two"
+            style="@style/TextView.Subtext.14"
+            android:layout_width="@dimen/size45"
+            android:layout_height="@dimen/size45"
+            android:background="@drawable/bg_edt_12"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:maxLines="1"
+            android:textSize="@dimen/sizesp16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edt_three"
+            app:layout_constraintStart_toEndOf="@id/edt_one"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edt_three"
+            style="@style/TextView.Subtext.14"
+            android:layout_width="@dimen/size45"
+            android:layout_height="@dimen/size45"
+            android:background="@drawable/bg_edt_12"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:maxLines="1"
+            android:textSize="@dimen/sizesp16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edt_four"
+            app:layout_constraintStart_toEndOf="@id/edt_two"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edt_four"
+            style="@style/TextView.Subtext.14"
+            android:layout_width="@dimen/size45"
+            android:layout_height="@dimen/size45"
+            android:background="@drawable/bg_edt_12"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:maxLines="1"
+            android:textSize="@dimen/sizesp16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/edt_three"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

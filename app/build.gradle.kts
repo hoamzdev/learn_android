@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.samplecleanarchitecture"
+    namespace = "com.example.testBaseApp"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.samplecleanarchitecture"
+        applicationId = "com.example.testBaseApp"
         minSdk = 29
         //noinspection OldTargetApi
         targetSdk = 36
@@ -132,9 +132,7 @@ dependencies {
 
 
     // Navigation Component cho Kotlin
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
 
-
+    implementation("com.vladsch.flexmark:flexmark:0.64.8")
 
 }
