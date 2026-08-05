@@ -1,0 +1,130 @@
+package com.example.testBaseApp.ui.main
+
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import com.example.testBaseApp.base.BaseActivity
+import com.example.testBaseApp.component.setOnClickShrinkListener
+import com.example.testBaseApp.databinding.ActivityMain5Binding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.WebSocketListener
+import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
+class MainActivity5 : BaseActivity<ActivityMain5Binding>(ActivityMain5Binding::inflate) {
+
+    private val selectFileLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ){ uri ->
+        uri?.let {
+            uriToJson(uri)
+        }
+    }
+
+    override fun bindView() {
+        viewBinding.apply {
+            btnSelect.setOnClickShrinkListener {
+                selectFileLauncher.launch("text/*")
+            }
+        }
+    }
+
+    private fun uriToJson(uri: Uri?) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fileName = uri?.path?.lowercase() ?: ""
+            try{
+                val jsonContent = if(fileName.endsWith(".csv")){
+                    parseCsvToJson(uri)
+                } else{
+                    parseExcelToJson(uri)
+                }
+                //switch context to main thread
+                withContext(Dispatchers.Main){
+                    val intent = Intent(this@MainActivity5, MainActivity6::class.java).apply {
+                        putExtra(KEY_JSON_FILE, jsonContent)
+                    }
+                    startActivity(intent)
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    @SuppressLint("Recycle")
+    private fun parseCsvToJson(uri: Uri?) : String {
+        uri?.let {
+            val inputStream = contentResolver.openInputStream(uri) ?: return "[]"
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val rowsObj = JSONObject()
+            var rowIndex = 0
+            reader.forEachLine { line ->
+                val cellsObj = JSONObject()
+                val tokens = line.split(",")
+                tokens.forEachIndexed { index, value ->
+                    val cellData = JSONObject().put("text",value.trim().replace("\"",""))
+                    cellsObj.put("$index", cellData)
+                }
+                val rowData = JSONObject().put("cells", cellsObj)
+                rowsObj.put("$rowIndex", rowData)
+                rowIndex++
+            }
+            inputStream.close()
+            val sheetObj = JSONObject().apply {
+                put("name","Sheet1")
+                put("rows", rowsObj)
+            }
+            return JSONArray().put(sheetObj).toString().replace("\\","")
+        }
+        return "[]"
+    }
+
+    @SuppressLint("Recycle")
+    private fun parseExcelToJson(uri: Uri?) : String {
+        uri?.let {
+            val inputStream = contentResolver.openInputStream(uri) ?: return "[]"
+            val workBook = WorkbookFactory.create(inputStream)
+            val sheet = workBook.getSheetAt(0)//sheet dau tien
+            val rowsObj = JSONObject()
+            for (row in sheet) {
+                val cellsObj = JSONObject()
+                for (cell in row) {
+                    val cellValue = when (cell.cellType) {
+                        CellType.STRING -> cell.stringCellValue
+                        CellType.NUMERIC -> cell.numericCellValue.toString()
+                        CellType.BOOLEAN -> cell.booleanCellValue.toString()
+                        CellType.FORMULA -> cell.cellFormula
+                        else -> ""
+                    }
+
+                    val cellData = JSONObject().put("text", cellValue)
+                    cellsObj.put(cell.columnIndex.toString(), cellData)
+                }
+                val rowData = JSONObject().put("cells", cellsObj)
+                rowsObj.put(row.rowNum.toString(), rowData)
+            }
+            workBook.close()
+            inputStream.close()
+            val sheetObj = JSONObject().apply {
+                put("name", sheet.sheetName ?: "Sheet1")
+                put("rows", rowsObj)
+            }
+            return JSONArray().put(sheetObj).toString().replace("\\", "")
+        }
+        return "[]"
+    }
+
+    companion object{
+        const val KEY_JSON_FILE = "key_json_file"
+    }
+}

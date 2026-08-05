@@ -135,4 +135,12 @@ dependencies {
 
     implementation("com.vladsch.flexmark:flexmark:0.64.8")
 
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
+    // Thư viện Apache POI để giải mã file .xlsx
+    implementation("org.apache.poi:poi-ooxml:5.5.1")
+
+    // Thư viện hỗ trợ MultiDex nếu project gặp lỗi quá số lượng method
+    implementation("androidx.multidex:multidex:2.0.1")
+
 }

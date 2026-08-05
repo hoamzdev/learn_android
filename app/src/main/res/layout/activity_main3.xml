@@ -5,19 +5,67 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
-    android:background="@color/white"
     tools:context=".ui.main.MainActivity3"
     tools:ignore="ScrollViewCount">
 
 
-    <com.example.testBaseApp.ui.common.component.CustomLayoutTest
-        android:id="@+id/tvNameCt"
+    <TextView
+        android:id="@+id/tv_question"
+        style="@style/TextView.Title.16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_marginTop="@dimen/size30"
+        android:gravity="center"
+        android:text="Question: 1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!--    layout answer-->
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flb_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size10"
+        android:minHeight="@dimen/size150"
+        android:paddingHorizontal="@dimen/size16"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_question" />
+
+
+    <!--    layout select option-->
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flb_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size10"
+        android:layout_marginBottom="@dimen/size30"
+        android:minHeight="@dimen/size150"
+        android:paddingHorizontal="@dimen/size16"
+        app:flexWrap="wrap"
+        app:layout_constraintBottom_toTopOf="@id/btn_check" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_check"
+        style="@style/TextView.Title.16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/size16"
+        android:layout_marginTop="@dimen/size10"
+        android:layout_marginBottom="@dimen/size20"
+        android:background="@drawable/bg_12"
+        android:elevation="@dimen/size5"
+        android:text="Check"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

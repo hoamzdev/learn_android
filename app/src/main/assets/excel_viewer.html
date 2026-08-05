@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Tên file phải khớp chính xác với tên file bạn vừa dán vào assets -->
+    <link rel="stylesheet" href="./xspreadsheet.css">
+    <script src="./xspreadsheet.js"></script>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        #grid { width: 100vw; height: 100vh; }
+    </style>
+    <title>Excel Viewer</title>
+</head>
+<body>
+<div id="grid"></div>
+<script src="./xspreadsheet.js"></script>
+<script>
+    const grid = x_spreadsheet('#grid', {
+        showToolbar: true,
+        showGrid: true,
+        showContextmenu: true
+    });
+
+    function loadData(jsonString) {
+        if (jsonString) {
+            const data = JSON.parse(jsonString);
+            grid.loadData(data);
+        }
+    }
+
+    function getData() {
+        const data = grid.getData();
+        if (window.AndroidBridge) {
+            window.AndroidBridge.saveExcelData(JSON.stringify(data));
+        }
+    }
+</script>
+</body>
+</html>

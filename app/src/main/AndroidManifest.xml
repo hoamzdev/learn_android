@@ -24,7 +24,7 @@
             android:name=".ui.main.MainActivity2"
             android:exported="false" />
         <activity
-            android:name=".ui.main.MainActivity3"
+            android:name=".ui.main.MainActivity5"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -43,6 +43,14 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.main.MainActivity4"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.main.MainActivity3"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.main.MainActivity6"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

@@ -1,5 +1,6 @@
 package com.example.testBaseApp.base
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +20,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.jvm.java
 
 abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) :
     AppCompatActivity() {
@@ -95,6 +97,10 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
         val intent = Intent(this, activity)
         intent.putExtras(bundle ?: Bundle())
         startActivity(intent)
+    }
+
+    inline fun <reified T> Context.newActivity(){
+        startActivity(Intent(this, T::class.java))
     }
 
     open fun observerData(
