@@ -11,13 +11,11 @@ import java.io.InputStream
 
 object ExcelHtmlConverter {
     fun convertToHtml(inputStream: InputStream): String {
-        // 1. Khởi tạo Workbook từ InputStream
         val workbook = WorkbookFactory.create(inputStream)
-        val sheet = workbook.getSheetAt(0) // Lấy Sheet đầu tiên (hoặc duyệt theo tên)
+        val sheet = workbook.getSheetAt(0)
 
         val html = StringBuilder()
 
-        // 2. Thêm HTML Header & CSS cơ bản cho bảng Excel
         html.append("<!DOCTYPE html><html><head>")
         html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
         html.append("<style>")
