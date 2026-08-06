@@ -137,12 +137,8 @@ dependencies {
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
-    // Thư viện Apache POI để giải mã file .xlsx
-    implementation("org.apache.poi:poi-ooxml:5.5.1")
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    // Thư viện hỗ trợ MultiDex nếu project gặp lỗi quá số lượng method
     implementation("androidx.multidex:multidex:2.0.1")
 
-
-    implementation("com.aspose:aspose-cells:24.12:android.via.java")
 }

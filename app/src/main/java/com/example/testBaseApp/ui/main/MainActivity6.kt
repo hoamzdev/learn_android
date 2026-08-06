@@ -1,94 +1,73 @@
 package com.example.testBaseApp.ui.main
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import com.aspose.cells.HtmlSaveOptions
-import com.aspose.cells.License
-import com.aspose.cells.Workbook
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain6Binding
-import com.example.testBaseApp.ui.main.MainActivity5.Companion.KEY_JSON_FILE
+import com.example.testBaseApp.ui.ExcelHtmlConverter
+import com.example.testBaseApp.utils.gone
+import com.example.testBaseApp.utils.invisible
+import com.example.testBaseApp.utils.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
 
 class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::inflate) {
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private val uri: Uri? by lazy { intent.getStringExtra(MainActivity5.KEY_JSON_FILE)?.toUri() }
+
     override fun initView() {
+        setUpWebView()
+        uri?.let { loadExcelFromUri(it) }
+    }
 
-        val targetUri = intent.data ?: intent.getStringExtra(KEY_JSON_FILE)?.toUri()
-        if (targetUri == null) {
-            Toast.makeText(this, "Không nhận được URI file!", Toast.LENGTH_SHORT).show()
-            return
-        }
 
+    private fun setUpWebView(){
         viewBinding.webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-
-            allowFileAccess = true
-            allowContentAccess = true
+            javaScriptEnabled = false
             builtInZoomControls = true
             displayZoomControls = false
             setSupportZoom(true)
-
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
+            textZoom = 125
+            useWideViewPort = true
+            loadWithOverviewMode = true
         }
 
-        Log.d("EXCEL_DEBUG", "Bắt đầu đọc URI qua Aspose.Cells: $targetUri")
-        toast("start reading")
+        viewBinding.webView.setInitialScale(140)
+    }
+
+    //load from uri
+    private fun loadExcelFromUri(uri : Uri){
+        viewBinding.progressBar.visible()
         lifecycleScope.launch(Dispatchers.IO) {
-            renderExcelLikePC(targetUri)
+            try{
+                contentResolver.openInputStream(uri)?.use {
+                    val htmlContent = ExcelHtmlConverter.convertToHtml(it)
+                    withContext(Dispatchers.Main){
+                        viewBinding.webView.apply {
+                            loadDataWithBaseURL(
+                                null,
+                                htmlContent,
+                                "text/html",
+                                "UTF-8",
+                                null
+                            )
+                        }
+                        viewBinding.progressBar.gone()
+                    }
+                } ?: run {
+                    toast("Can't not open file from input stream")
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
+                toast("${e.message}")
+                Log.d("MainActivity6", "loadExcelFromUri: ${e.message}")
+            }
         }
     }
 
-    private suspend fun renderExcelLikePC(fileUri: Uri) {
-        try {
-            val inputStream = contentResolver.openInputStream(fileUri)
-                ?: throw IllegalArgumentException("Cannot open InputStream")
+    //load from absolute path
 
-            val workbook = inputStream.use { Workbook(it) }
-
-            val options = HtmlSaveOptions().apply {
-                exportImagesAsBase64 = true
-                exportGridLines = true
-                exportActiveWorksheetOnly = true
-                presentationPreference = true
-            }
-
-            val htmlDir = File(cacheDir, "excel_html").apply {
-                if (!exists()) mkdirs()
-            }
-
-            val htmlFile = File(htmlDir, "index.html")
-
-            workbook.save(htmlFile.absolutePath, options)
-
-
-            val html = htmlFile.readText(Charsets.UTF_8)
-
-// Chỉ thay padding trái/phải
-
-
-            htmlFile.writeText(html)
-
-            Log.d("EXCEL_DEBUG", "HTML: ${htmlFile.absolutePath}")
-
-            withContext(Dispatchers.Main) {
-                viewBinding.webView.loadUrl(htmlFile.toURI().toString())
-            }
-
-        } catch (e: Exception) {
-            Log.e("EXCEL_DEBUG", "Error", e)
-        }
-    }
 }

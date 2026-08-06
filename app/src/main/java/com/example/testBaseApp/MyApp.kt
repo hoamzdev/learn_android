@@ -1,7 +1,6 @@
 package com.example.testBaseApp
 
 import android.app.Application
-import com.aspose.cells.License
 import dagger.hilt.android.HiltAndroidApp
 
 /**
