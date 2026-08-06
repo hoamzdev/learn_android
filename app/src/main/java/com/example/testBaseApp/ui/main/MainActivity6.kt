@@ -1,44 +1,94 @@
 package com.example.testBaseApp.ui.main
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.testBaseApp.R
+import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.aspose.cells.HtmlSaveOptions
+import com.aspose.cells.License
+import com.aspose.cells.Workbook
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain6Binding
+import com.example.testBaseApp.ui.main.MainActivity5.Companion.KEY_JSON_FILE
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 
 class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::inflate) {
 
-    private lateinit var json: String
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun initView() {
-        json = intent.getStringExtra(MainActivity5.KEY_JSON_FILE) ?: "[]"
+
+        val targetUri = intent.data ?: intent.getStringExtra(KEY_JSON_FILE)?.toUri()
+        if (targetUri == null) {
+            Toast.makeText(this, "Không nhận được URI file!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         viewBinding.webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
-            loadWithOverviewMode = true
-            useWideViewPort = true
+
             allowFileAccess = true
+            allowContentAccess = true
             builtInZoomControls = true
             displayZoomControls = false
+            setSupportZoom(true)
+
+            allowFileAccessFromFileURLs = true
+            allowUniversalAccessFromFileURLs = true
         }
 
-        viewBinding.webView.apply {
-            webViewClient = object : WebViewClient(){
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    evaluateJavascript(
-                        "loadData('$json')", null
-                    )
-                }
+        Log.d("EXCEL_DEBUG", "Bắt đầu đọc URI qua Aspose.Cells: $targetUri")
+        toast("start reading")
+        lifecycleScope.launch(Dispatchers.IO) {
+            renderExcelLikePC(targetUri)
+        }
+    }
+
+    private suspend fun renderExcelLikePC(fileUri: Uri) {
+        try {
+            val inputStream = contentResolver.openInputStream(fileUri)
+                ?: throw IllegalArgumentException("Cannot open InputStream")
+
+            val workbook = inputStream.use { Workbook(it) }
+
+            val options = HtmlSaveOptions().apply {
+                exportImagesAsBase64 = true
+                exportGridLines = true
+                exportActiveWorksheetOnly = true
+                presentationPreference = true
             }
-            loadUrl("file:///android_asset/excel_viewer.html")
+
+            val htmlDir = File(cacheDir, "excel_html").apply {
+                if (!exists()) mkdirs()
+            }
+
+            val htmlFile = File(htmlDir, "index.html")
+
+            workbook.save(htmlFile.absolutePath, options)
+
+
+            val html = htmlFile.readText(Charsets.UTF_8)
+
+// Chỉ thay padding trái/phải
+
+
+            htmlFile.writeText(html)
+
+            Log.d("EXCEL_DEBUG", "HTML: ${htmlFile.absolutePath}")
+
+            withContext(Dispatchers.Main) {
+                viewBinding.webView.loadUrl(htmlFile.toURI().toString())
+            }
+
+        } catch (e: Exception) {
+            Log.e("EXCEL_DEBUG", "Error", e)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.testBaseApp
 
 import android.app.Application
+import com.aspose.cells.License
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -8,4 +9,8 @@ import dagger.hilt.android.HiltAndroidApp
  */
 
 @HiltAndroidApp
-class MyApp : Application()
+class MyApp : Application(){
+    override fun onCreate() {
+        super.onCreate()
+    }
+}

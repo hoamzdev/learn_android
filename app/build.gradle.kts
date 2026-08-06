@@ -143,4 +143,6 @@ dependencies {
     // Thư viện hỗ trợ MultiDex nếu project gặp lỗi quá số lượng method
     implementation("androidx.multidex:multidex:2.0.1")
 
+
+    implementation("com.aspose:aspose-cells:24.12:android.via.java")
 }
