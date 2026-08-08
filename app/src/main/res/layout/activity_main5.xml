@@ -8,19 +8,17 @@
     android:background="@android:color/white"
     tools:context=".ui.main.MainActivity5">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSelect"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcViewFile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/size16"
-        android:layout_marginBottom="@dimen/size30"
-        android:background="@drawable/bg_12"
-        android:text="Select file"
-        android:textAllCaps="false"
-        android:paddingVertical="@dimen/size10"
-        android:elevation="@dimen/size4"
-        android:textColor="@color/white"
-        style="@style/TextView.CTA.16"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/size20"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

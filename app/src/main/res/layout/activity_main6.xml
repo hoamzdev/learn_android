@@ -6,14 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="false"
     tools:context=".ui.main.MainActivity6">
 
+    <LinearLayout
+        android:id="@+id/ln_name_file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_37B43D"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
+
+        <com.example.testBaseApp.ui.common.component.MovableText
+            android:id="@+id/tv_name_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            android:layout_marginTop="@dimen/size30"
+            android:background="@color/color_37B43D"
+            android:paddingVertical="@dimen/size5"
+            android:textColor="@color/white"
+            android:gravity="center_vertical|center_horizontal"
+            style="@style/TextView.Subtext.14"/>
+
+    </LinearLayout>
 
     <WebView
         android:id="@+id/webView"
         android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/ln_name_file"
+        app:layout_constraintBottom_toTopOf="@id/rcTabs"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"/>
 
     <ProgressBar
         android:visibility="invisible"
@@ -26,15 +51,17 @@
         android:indeterminateTint="@color/color_tag_diagnosis"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcTabs"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size30"
+        android:layout_height="@dimen/size35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:background="@color/white"
+        android:background="@color/color_37B43D"
         tools:listitem="@layout/item_tab"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
