@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="false">
-            <com.artifex.sonui.editor.SOTextView
+            <com.hwa.excelllll.excelsoui.SOTextView
                 android:id="@+id/shape_dialog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

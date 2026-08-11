@@ -44,15 +44,15 @@ android {
 
     flavorDimensions += "default"
     productFlavors {
-        create("for_dev_") {
+        create("for_dev") {
             dimension = "default"
         }
 
     }
 
     sourceSets {
-        getByName("for_dev_") {
-            res.srcDirs("src/for_dev_/res")
+        getByName("for_dev") {
+            res.srcDirs("src/for_dev/res")
         }
     }
 

@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_3sdp">
-        <com.artifex.sonui.editor.SOTextView
-            android:textSize="@dimen/_13sdp"
+        <com.hwa.excelllll.excelsoui.SOTextView
+            android:textSize="13sp"
             android:textStyle="bold"
             android:id="@+id/formula"
             android:background="@color/colorPrimaryContrast"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/sodk_editor_font_formula_text_box_style"/>
-        <com.artifex.sonui.editor.SOTextView
+        <com.hwa.excelllll.excelsoui.SOTextView
             android:textSize="14sp"
             android:id="@+id/description"
             android:background="@color/colorPrimaryContrast"

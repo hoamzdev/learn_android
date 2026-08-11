@@ -11,7 +11,7 @@
         android:id="@+id/sheetTab"
         android:layout_width="wrap_content"
         android:layout_height="36dp">
-        <com.artifex.sonui.editor.SOTextView
+        <com.hwa.excelllll.excelsoui.SOTextView
             android:textSize="14sp"
             android:textColor="@color/ss_bottom_sheet_text"
             android:gravity="center"

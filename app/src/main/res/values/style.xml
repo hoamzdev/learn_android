@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextView.TeLex.regular" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp12</item>
+    </style>
+
+    <style name="TextView.TeLex.bold" parent="">
+        <item name="fontFamily">@font/nexapro_trial_bold</item>
+        <item name="android:fontFamily">@font/nexapro_trial_bold</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp12</item>
+    </style>
+
+    <style name="TextView.CTA.16" parent="">
+        <item name="fontFamily">@font/nexapro_trial_bold</item>
+        <item name="android:fontFamily">@font/nexapro_trial_bold</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp16</item>
+    </style>
+
+    <style name="TextView.Headerline.24" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp24</item>
+    </style>
+
+    <style name="TextView.Headline.22" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp22</item>
+    </style>
+
+    <style name="TextView.Headline.20" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp20</item>
+    </style>
+
+    <style name="TextView.Title.18" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp18</item>
+    </style>
+
+    <style name="TextView.Title.16" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp16</item>
+    </style>
+
+    <style name="TextView.Body.16" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp16</item>
+    </style>
+
+    <style name="TextView.Body.14" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp14</item>
+    </style>
+
+    <style name="TextView.Subtext.14" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp14</item>
+    </style>
+
+    <style name="TextView.Subtext.12" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp12</item>
+    </style>
+
+    <style name="TextView.Subtext.10" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp10</item>
+    </style>
+
+    <style name="TextView.Subtext.Italic.12" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular_italic</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular_italic</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp12</item>
+    </style>
+
+    <style name="TextView.Subtext.Italic.14" parent="">
+        <item name="fontFamily">@font/nexapro_trial_regular_italic</item>
+        <item name="android:fontFamily">@font/nexapro_trial_regular_italic</item>
+        <item name="android:textColor">@color/color_primary_text</item>
+        <item name="android:textColorHint">@color/color_secondary_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/sizesp14</item>
+    </style>
+
+    <style name="RoundedSquare" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/size13</item>
+    </style>
+
+    <style name="CustomCorners" parent="">
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/size12</item>
+
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/size12</item>
+
+        <item name="cornerFamilyBottomLeft">cut</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+
+        <item name="cornerFamilyBottomRight">rounded</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="CircleShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="CustomCardCorners" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/size12</item>
+
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/size12</item>
+
+        <item name="cornerFamilyBottomLeft">rounded</item>
+        <item name="cornerSizeBottomLeft">@dimen/size8</item>
+
+        <item name="cornerFamilyBottomRight">rounded</item>
+        <item name="cornerSizeBottomRight">@dimen/size8</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="Theme.Material3.Light.BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+
+    <!--Custom style ads native-->
+    <style name="AppBaseTheme" parent="android:Theme.Light"/>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme"/>
+
+    <style name="AppTheme.AdHeadline">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textColor">@color/color_text_ad_head_line</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+    </style>
+
+    <style name="AppTheme.AdBody">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textColor">@color/color_text_ad_body</item>
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+    </style>
+
+    <style name="AppTheme.Advertiser">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textColor">@color/color_text_ad_body</item>
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+    </style>
+
+    <style name="AppTheme.AdPrice">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textColor">@color/color_text_ad_body</item>
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+    </style>
+
+    <style name="AppTheme.AdCallToAction">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/nexapro_trial_regular</item>
+    </style>
+
+</resources>

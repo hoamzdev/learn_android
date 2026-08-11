@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.artifex.sonui.ChooseDocListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hwa.excelllll.excelsoui.ChooseDocListItemView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="@dimen/_5sdp">
@@ -12,7 +12,7 @@
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <com.artifex.sonui.editor.SOTextView
+        <com.hwa.excelllll.excelsoui.SOTextView
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/sodk_so_ui_preview_button_textcolor"
             android:id="@+id/name"
@@ -62,7 +62,7 @@
                     android:layout_marginRight="@dimen/sodk_editor_control_icon_margin"
                     android:src="@drawable/ic_share"
                     android:scaleType="fitCenter"/>
-                <com.artifex.sonui.editor.SOTextView
+                <com.hwa.excelllll.excelsoui.SOTextView
                     android:textSize="11sp"
                     android:textColor="@color/sodk_so_ui_preview_button_textcolor"
                     android:gravity="center"
@@ -89,7 +89,7 @@
                     android:layout_marginRight="@dimen/sodk_editor_control_icon_margin"
                     android:src="@drawable/ic_share"
                     android:scaleType="fitCenter"/>
-                <com.artifex.sonui.editor.SOTextView
+                <com.hwa.excelllll.excelsoui.SOTextView
                     android:textSize="11sp"
                     android:textColor="@color/sodk_so_ui_preview_button_textcolor"
                     android:gravity="center"
@@ -116,7 +116,7 @@
                     android:layout_marginRight="@dimen/sodk_editor_control_icon_margin"
                     android:src="@drawable/ic_share"
                     android:scaleType="fitCenter"/>
-                <com.artifex.sonui.editor.SOTextView
+                <com.hwa.excelllll.excelsoui.SOTextView
                     android:textSize="11sp"
                     android:textColor="@color/sodk_so_ui_preview_button_textcolor"
                     android:gravity="center"
@@ -143,7 +143,7 @@
                     android:layout_marginRight="@dimen/sodk_editor_control_icon_margin"
                     android:src="@drawable/ic_share"
                     android:scaleType="fitCenter"/>
-                <com.artifex.sonui.editor.SOTextView
+                <com.hwa.excelllll.excelsoui.SOTextView
                     android:textSize="11sp"
                     android:textColor="@color/sodk_so_ui_preview_button_textcolor"
                     android:gravity="center"
@@ -160,8 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClickControlLogout">
-                <com.artifex.sonui.editor.SOTextView
-                    android:textSize="@dimen/_13sdp"
+                <com.hwa.excelllll.excelsoui.SOTextView
+                    android:textSize="13sp"
                     android:textColor="@color/colorPrimaryContrast"
                     android:gravity="center"
                     android:clickable="false"
@@ -172,4 +172,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</com.artifex.sonui.ChooseDocListItemView>
+</com.hwa.excelllll.excelsoui.ChooseDocListItemView>

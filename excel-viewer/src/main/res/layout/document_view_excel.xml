@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
-        <com.artifex.sonui.editor.SOTextView
+        <com.hwa.excelllll.excelsoui.SOTextView
             android:textSize="15sp"
             android:textStyle="italic"
             android:textColor="@color/sodk_editor_fx_textcolor"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sodk_editor_fx"/>
-        <com.artifex.sonui.editor.SOEditText
+        <com.hwa.excelllll.excelsoui.editor.SOEditText
             android:textSize="15sp"
             android:textColor="@color/sodk_editor_fx_textcolor"
             android:id="@+id/text_input"
@@ -58,7 +58,7 @@
             android:background="@color/colorGray_BEC7D8"
             android:layout_width="@dimen/sodk_editor_hruler_base_size"
             android:layout_height="match_parent"/>
-        <com.artifex.sonui.editor.HorizontalRuler
+        <com.hwa.excelllll.excelsoui.editor.HorizontalRuler
             android:orientation="horizontal"
             android:id="@+id/horizontal_ruler"
             android:background="@color/colorGray_BEC7D8"
@@ -83,7 +83,7 @@
         android:layout_marginStart="13dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fx_bar"/>
-    <com.artifex.sonui.editor.VerticalRuler
+    <com.hwa.excelllll.excelsoui.editor.VerticalRuler
         android:orientation="vertical"
         android:id="@+id/vertical_ruler"
         android:background="@color/colorGray_BEC7D8"

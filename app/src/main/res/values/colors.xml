@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="color_BF3131">#BF3131</color>
+    <color name="color_F1EFEC">#F1EFEC</color>
+    <color name="color_4E71FF">#4E71FF</color>
+    <color name="color_E5E5E5">#E5E5E5</color>
+    <color name="color_909A92">#909A92</color>
+    <color name="color_06350D">#06350D</color>
+    <color name="color_37B43D">#37B43D</color>
+    <color name="lang_select_color">#FFFFFF</color>
+    <color name="lang_unselect_color">#1A1A1A</color>
+    <color name="region_select_color">#80FFFFFF</color>
+    <color name="extra_region_select_color">#FFFFFF</color>
+    <color name="extra_region_unselect_color">#1A1A1A</color>
+
+    <color name="bg_color">#F6F5F2</color>
+    <color name="color_BFBFBF">#BFBFBF</color>
+    <color name="region_unselect_color">#B2B2B2</color>
+    <color name="shadow_view_default_shadow_color">#DCDDE0</color>
+    <color name="shadow_view_foreground_color_dark">#1f000000</color>
+    <declare-styleable name="ShadowView_Layout">
+        <attr name="layout_gravity">
+            <flag name="top" value="0x30"/>
+            <flag name="bottom" value="0x50"/>
+            <flag name="left" value="0x03"/>
+            <flag name="right" value="0x05"/>
+            <flag name="center_vertical" value="0x10"/>
+            <flag name="fill_vertical" value="0x70"/>
+            <flag name="center_horizontal" value="0x01"/>
+            <flag name="fill_horizontal" value="0x07"/>
+            <flag name="center" value="0x11"/>
+            <flag name="fill" value="0x77"/>
+            <flag name="clip_vertical" value="0x80"/>
+            <flag name="clip_horizontal" value="0x08"/>
+            <flag name="start" value="0x00800003"/>
+            <flag name="end" value="0x00800005"/>
+        </attr>
+    </declare-styleable>
+    <array name="multi_gradient">
+        <item>#FFDD7F</item>
+        <item>#FF00A205</item>
+    </array>
+    <color name="color_primary_text">#171B16</color>
+    <color name="color_dark_primary">#06350D</color>
+    <color name="color_primary">#06350D</color>
+    <color name="color_secondary_text">#909A92</color>
+    <color name="bg_home">#F8F8F8</color>
+    <color name="color_shadow_30">#4D000000</color>
+    <color name="color_white_30">#4DFFFFFF</color>
+    <color name="color_black_50">#80000000</color>
+    <color name="color_divider">#DADADA</color>
+    <color name="color_warning">#F21B1B</color>
+    <color name="color_shadow_black_10">#1A000000</color>
+    <color name="shadow_color_30">#40000000</color>
+    <color name="color_toxicity">#14F21B1B</color>
+    <color name="color_tag_plant">#149AD3</color>
+    <color name="color_tag_diagnosis">#D33A14</color>
+    <color name="color_tag_mushroom">#6F12BF</color>
+    <color name="color_disable">#CACACA</color>
+    <color name="color_text_ad_body">#666666</color>
+    <color name="color_text_ad_head_line">#03320A</color>
+    <color name="shimmer_placeholder">#DDDDDD</color>
+    <color name="color_background_button_install_ad">#03320A</color>
+
+</resources>

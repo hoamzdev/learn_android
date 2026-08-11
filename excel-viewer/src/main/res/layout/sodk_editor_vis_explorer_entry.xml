@@ -12,7 +12,7 @@
         android:scaleType="centerInside"
         android:maxHeight="120dp"
         android:minHeight="@dimen/sodk_editor_explorer_grid_image_height"/>
-    <com.artifex.sonui.editor.SOTextView
+    <com.hwa.excelllll.excelsoui.SOTextView
         android:textSize="@dimen/sodk_editor_explorer_grid_cell_textsize"
         android:gravity="center_horizontal"
         android:id="@+id/title"

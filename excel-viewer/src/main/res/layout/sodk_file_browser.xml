@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <com.artifex.sonui.editor.SOEditText
+        <com.hwa.excelllll.excelsoui.editor.SOEditText
             android:textSize="20sp"
             android:textColor="@color/text"
             android:id="@+id/edit_text"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/breadcrumb_wrapper">
-        <com.artifex.sonui.ExplorerListView
+        <com.hwa.excelllll.excelsoui.ExplorerListView
             android:layout_gravity="center_horizontal"
             android:id="@+id/fileListView"
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:splitMotionEvents="false"/>
-        <com.artifex.sonui.editor.SOTextView
+        <com.hwa.excelllll.excelsoui.SOTextView
             android:textSize="15sp"
             android:textColor="@color/sodk_so_ui_explorer_text_color"
             android:gravity="center_horizontal"

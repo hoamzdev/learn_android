@@ -8,7 +8,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
-    <com.artifex.sonui.editor.SOEditText
+    <com.hwa.excelllll.excelsoui.SOEditText
         android:textSize="13sp"
         android:textColor="@color/white"
         android:textColorHint="#99ffffff"

@@ -76,20 +76,20 @@
             android:visibility="gone"
             android:layout_width="@dimen/sodk_editor_note_editor_width"
             android:layout_height="wrap_content">
-            <com.artifex.sonui.editor.SOTextView
+            <com.hwa.excelllll.excelsoui.SOTextView
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:id="@+id/doc_note_editor_author"
                 android:layout_height="wrap_content"
                 android:text=""
                 style="@style/sodk_editor_note_editor_textview_style"/>
-            <com.artifex.sonui.editor.SOTextView
+            <com.hwa.excelllll.excelsoui.SOTextView
                 android:textSize="13sp"
                 android:id="@+id/doc_note_editor_date"
                 android:layout_height="wrap_content"
                 android:text=""
                 style="@style/sodk_editor_note_editor_textview_style"/>
-            <com.artifex.sonui.editor.SOEditText
+            <com.hwa.excelllll.excelsoui.editor.SOEditText
                 android:gravity="top"
                 android:id="@+id/doc_note_editor_text"
                 android:layout_height="wrap_content"

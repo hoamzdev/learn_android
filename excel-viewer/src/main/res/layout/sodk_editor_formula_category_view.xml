@@ -8,17 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_3sdp">
-        <com.artifex.sonui.editor.SOTextView
-            android:textSize="@dimen/_13sdp"
+        <com.hwa.excelllll.excelsoui.SOTextView
+            android:textSize="13sp"
             android:textStyle="bold"
             android:id="@+id/name"
             android:background="@color/colorPrimaryContrast"
             android:padding="@dimen/_3sdp"
-            android:layout_width="@dimen/_110sdp"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             style="@style/sodk_editor_font_formula_text_box_style"/>
-        <com.artifex.sonui.editor.SOTextView
-            android:textSize="@dimen/_13sdp"
+        <com.hwa.excelllll.excelsoui.SOTextView
+            android:textSize="13sp"
             android:textStyle="bold"
             android:background="@color/colorPrimaryContrast"
             android:layout_width="wrap_content"

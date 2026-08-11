@@ -3,7 +3,7 @@
     android:paddingLeft="@dimen/_3sdp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.artifex.sonui.editor.SOTextView
+    <com.hwa.excelllll.excelsoui.SOTextView
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="24sp"
         android:id="@+id/name"

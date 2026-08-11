@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.artifex.sonui.editor.SOTextView
+    <com.hwa.excelllll.excelsoui.SOTextView
         android:textSize="24dp"
         android:ellipsize="end"
         android:id="@+id/toc_item"

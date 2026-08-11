@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.artifex.sonui.editor.SOTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:textSize="@dimen/_13sdp"
+<com.hwa.excelllll.excelsoui.SOTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:textSize="13sp"
     android:textColor="@color/colorWord_2392FF"
     android:gravity="center_vertical"
     android:id="@android:id/text1"

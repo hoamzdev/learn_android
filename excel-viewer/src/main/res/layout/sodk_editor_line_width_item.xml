@@ -8,10 +8,10 @@
         android:id="@+id/bar"
         android:background="@color/white"
         android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_1sdp"
+        android:layout_height="1dp"
         android:layout_marginLeft="@dimen/_5sdp"
         android:layout_marginRight="@dimen/_5sdp"/>
-    <com.artifex.sonui.editor.SOTextView
+    <com.hwa.excelllll.excelsoui.SOTextView
         android:textSize="24dp"
         android:textColor="@color/white"
         android:layout_gravity="center_vertical"
