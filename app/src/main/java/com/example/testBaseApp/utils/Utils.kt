@@ -92,11 +92,7 @@ object Utils {
     @JvmStatic
     fun getExcelFiles(context: Context): ArrayList<OfficeModel> {
         val fileList = ArrayList<OfficeModel>()
-        val contentUri: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Files.getContentUri("external_primary")
-        } else {
-            MediaStore.Files.getContentUri("external")
-        }
+        val contentUri: Uri = MediaStore.Files.getContentUri("external_primary")
 
         // Lấy thêm cột _ID để tạo Content Uri
         val projection = arrayOf(
