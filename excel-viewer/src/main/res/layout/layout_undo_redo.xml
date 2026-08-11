@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:id="@+id/doUndoLayout"
+    android:background="@drawable/shape_bg_pdf_edit_draw_back"
+    android:visibility="visible"
+    android:layout_width="wrap_content"
+    android:layout_height="34dp">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_undo"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_width="39dp"
+        android:layout_height="34dp"
+        android:paddingStart="9dp"
+        android:paddingEnd="6dp"
+        app:srcCompat="@drawable/ic_draw_back"/>
+    <View
+        android:id="@+id/v_undo_line"
+        android:background="#4dffffff"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="16dp"/>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_redo"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_width="39dp"
+        android:layout_height="34dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="9dp"
+        app:srcCompat="@drawable/ic_draw_go"/>
+</LinearLayout>

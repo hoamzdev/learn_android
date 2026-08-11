@@ -23,6 +23,16 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters += listOf(
+                "armeabi-v7a",
+                "arm64-v8a",
+                "x86",
+                "x86_64"
+            )
+        }
+
     }
 
     val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
@@ -108,6 +118,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(project(":app-domain"))
     implementation(project(":app-data"))
+    implementation(project(":excel-viewer"))
     implementation(libs.glide)
     implementation(libs.gson)
     implementation(libs.retrofit)

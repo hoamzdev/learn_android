@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_crown_icon"
+        android:id="@+id/item_premium"
+        android:visible="false"
+        android:title="@string/get_premium"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:icon="@drawable/ic_search"
+        android:id="@+id/item_search"
+        android:title="@string/str_action_search"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:icon="0x7f070149"
+        android:id="@+id/item_settings"
+        android:visible="false"
+        android:title="@string/str_action_setting"
+        app:iconTint="@color/icon_color"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_permission_allow_bg"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_flag"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/flag_hi"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryText"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:id="@+id/tv_name"
+        android:focusable="false"
+        android:clickable="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="india"
+        android:lines="1"
+        android:includeFontPadding="false"
+        android:layout_weight="1"
+        android:fontFamily="@font/poppins_semibold"
+        android:textAlignment="viewStart"
+        android:layout_marginStart="16dp"/>
+    <ImageView
+        android:id="@+id/iv_selected_state"
+        android:focusable="false"
+        android:clickable="false"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="20dp"
+        app:srcCompat="@drawable/ic_not_choice"/>
+</LinearLayout>

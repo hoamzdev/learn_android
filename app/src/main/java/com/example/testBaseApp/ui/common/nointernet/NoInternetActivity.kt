@@ -6,7 +6,6 @@ import android.util.Log
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.component.setOnSingleListener
 import com.example.testBaseApp.databinding.ActivityNoInternetBinding
-import com.example.testBaseApp.ui.main.MainActivity
 import com.example.testBaseApp.utils.CheckInternet
 
 class NoInternetActivity :

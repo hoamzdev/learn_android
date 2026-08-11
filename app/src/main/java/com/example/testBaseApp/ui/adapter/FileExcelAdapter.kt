@@ -7,7 +7,6 @@ import com.example.testBaseApp.base.BaseListAdapter
 import com.example.testBaseApp.base.BaseViewHolder
 import com.example.testBaseApp.component.setOnClickShrinkListener
 import com.example.testBaseApp.databinding.ItemFileExcelBinding
-import com.example.testBaseApp.ui.ExcelFileItem
 import com.example.testBaseApp.ui.obj.OfficeModel
 
 data class FileExcelItem(

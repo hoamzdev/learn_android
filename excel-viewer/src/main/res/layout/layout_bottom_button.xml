@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="11dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:srcCompat="@drawable/ic_flip_black"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:textSize="11sp"
+        android:textColor="@color/color_151722"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:id="@+id/tvButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="@string/rotate"
+        android:lines="1"
+        style="@style/FontMedium"/>
+</LinearLayout>

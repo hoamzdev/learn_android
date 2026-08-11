@@ -3,11 +3,9 @@ package com.example.testBaseApp.ui.main
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.net.toUri
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain5Binding
-import com.example.testBaseApp.ui.MainViewModel
 import com.example.testBaseApp.ui.adapter.FileExcelAdapter
 import com.example.testBaseApp.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,15 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity5 : BaseActivity<ActivityMain5Binding>(ActivityMain5Binding::inflate) {
     private val adapter by lazy { FileExcelAdapter() }
-    private val mainViewModel : MainViewModel by viewModels()
-//    private val selectFileLauncher = registerForActivityResult(
-//        ActivityResultContracts.GetContent()
-//    ) { uri ->
-//        uri?.let {
-////            uriToJson(uri)
-//            onSendUri(uri)
-//        }
-//    }
 
     private fun onSendUri(uri: Uri) {
         val intent = Intent(this, MainActivity6::class.java).apply {

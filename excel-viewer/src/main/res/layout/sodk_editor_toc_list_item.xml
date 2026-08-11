@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.artifex.sonui.editor.SOTextView
+        android:textSize="24dp"
+        android:ellipsize="end"
+        android:id="@+id/toc_item"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingTop="@dimen/_1sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_1sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        style="@style/sodk_editor_pdf_toc_text_box_style"/>
+</RelativeLayout>
