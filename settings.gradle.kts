@@ -26,3 +26,4 @@ rootProject.name = "BaseApp"
 include(":app")
 include(":app-domain")
 include(":app-data")
+include (":library")

@@ -1,64 +1,111 @@
 package com.example.testBaseApp.ui.main
 
-import android.view.View
-import android.widget.LinearLayout
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.core.net.toUri
+import com.cherry.lib.doc.bean.DocSourceType
+import com.cherry.lib.doc.bean.FileType
 import com.example.testBaseApp.base.BaseActivity
-import com.example.testBaseApp.component.setOnClickShrinkListener
-import com.example.testBaseApp.component.setOnSingleListener
 import com.example.testBaseApp.databinding.ActivityMainBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.example.testBaseApp.ui.adapter.FileExcelAdapter
+import com.example.testBaseApp.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-
-    private lateinit var sheetBehavior : BottomSheetBehavior<LinearLayout>
-
-    override fun initView() {
-        sheetBehavior = BottomSheetBehavior.from(viewBinding.sheetContent)
-        sheetBehavior.isHideable = true
-        sheetBehavior.peekHeight = 0
-        sheetBehavior.isDraggable = true
-        sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    private val adapter by lazy { FileExcelAdapter() }
+    private fun onSendUri(uri: Uri) {
+        val nameFile =  getNameFileFromUri(uri)
+        log(nameFile)
+        if(nameFile.endsWith(".xls") || nameFile.endsWith(".XLS")){
+            DocViewerActivity.launchDocViewer(
+                this,
+                DocSourceType.URI,
+                uri.toString(), FileType.XLS
+            )
+        }
+        else if(nameFile.endsWith(".xlsx") || nameFile.endsWith(".XLSX")){
+            DocViewerActivity.launchDocViewer(
+                this,
+                DocSourceType.URI,
+                uri.toString(), FileType.XLSX
+            )
+        }
     }
 
-    override fun bindView() {
-        viewBinding.apply {
-            btnSort.setOnClickShrinkListener { _ ->
-                if(sheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN){
-                    sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+    private fun getNameFileFromUri(uri: Uri) : String{
+        var nameFile = ""
+        contentResolver.query(uri, null, null,null)?.use {
+            if(it.moveToFirst()){
+                val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if(nameIndex != -1){
+                    nameFile = it.getString(nameIndex)
                 }
-                else{
-                    sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
             }
-
-            btnHide.setOnSingleListener {
-                sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-
-            btnNavToScreen2.setOnClickShrinkListener {
-                showActivity(MainActivity2::class.java,null)
-            }
-
         }
+        return nameFile
+    }
 
-        sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
-            override fun onStateChanged(p0: View, newState: Int) {
-                when(newState){
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        log("STATE_HIDDEN")
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        log("STATE_EXPANDED")
-                    }
-                    else -> {}
-                }
+
+
+    override fun initView() {
+        setUpRecView()
+        checkAndRequestPermission()
+    }
+
+    private fun checkAndRequestPermission(){
+        if(Utils.hasStoragePermission(this)){
+            loadExcelFiles()
+        }
+        else{
+            Utils.requestStoragePermission(this)
+        }
+    }
+
+    // 4. Nhận kết quả sau khi người dùng đồng ý/từ chối cấp quyền
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_STORAGE) {
+            if (Utils.hasStoragePermission(this)) {
+                loadExcelFiles()
+            } else {
+                Toast.makeText(this, "Bạn chưa cấp quyền đọc bộ nhớ!", Toast.LENGTH_SHORT).show()
             }
-            override fun onSlide(p0: View, p1: Float) {
+        }
+    }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_STORAGE) {
+            if (Utils.hasStoragePermission(this)) {
+                loadExcelFiles()
+            } else {
+                Toast.makeText(this, "Từ chối cấp quyền!", Toast.LENGTH_SHORT).show()
             }
-        })
+        }
+    }
 
+    private fun loadExcelFiles(){
+        val listFiles = Utils.getExcelFiles(this)
+        adapter.submitList(listFiles)
+    }
+
+    private fun setUpRecView(){
+        viewBinding.rcViewFile.adapter = adapter
+        adapter.setOnClick { file ->
+            onSendUri(file.fileUri!!.toUri())
+        }
+    }
+
+    companion object {
+        const val KEY_JSON_FILE = "key_json_file"
+        const val INVALID_NAME = "Invalid name"
+        const  val REQUEST_CODE_STORAGE = 2296
     }
 }

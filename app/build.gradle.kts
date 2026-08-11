@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.parcelize)
 }
 
 android {
@@ -108,6 +107,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(project(":app-domain"))
     implementation(project(":app-data"))
+    implementation(project(":library"))
     implementation(libs.glide)
     implementation(libs.gson)
     implementation(libs.retrofit)
@@ -137,8 +137,15 @@ dependencies {
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     implementation("androidx.multidex:multidex:2.0.1")
+//
+//    implementation("io.coil-kt:coil:2.7.0")
+//    implementation("com.blankj:utilcodex:1.31.1")
+//
+//    implementation("com.github.albfernandez:juniversalchardet:2.5.0")
+//
+//    implementation("org.apache.poi:poi:5.5.1")
+//    implementation("org.apache.poi:poi-ooxml:5.5.1")
 
 }
