@@ -1,6 +1,6 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 class ExcelRowColumnController(
     private val document: SODoc

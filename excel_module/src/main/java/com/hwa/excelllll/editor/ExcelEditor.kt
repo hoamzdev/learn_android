@@ -1,6 +1,6 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /** Small UI-facing facade over the native editing controllers. */
 class ExcelEditor(document: SODoc) {

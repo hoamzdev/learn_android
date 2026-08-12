@@ -1,7 +1,7 @@
 package com.hwa.excelllll.editor
 
 import android.graphics.Bitmap
-import com.hwa.excelllll.core.SOBitmap
+import com.hwa.excelllll.SOBitmap
 
 /**
  * Creates the SOBitmap object expected by SOPage's render bridge.

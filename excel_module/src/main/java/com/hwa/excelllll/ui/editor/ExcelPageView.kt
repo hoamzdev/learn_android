@@ -3,8 +3,8 @@ package com.hwa.excelllll.ui.editor
 import android.annotation.SuppressLint
 import android.content.Context
 import com.hwa.excelllll.core.InterfaceC1335o
-import com.hwa.excelllll.core.SOBitmap
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SOBitmap
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.ui.editor.DocPageView
 
 /**

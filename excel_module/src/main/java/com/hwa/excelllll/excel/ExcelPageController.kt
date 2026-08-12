@@ -3,9 +3,9 @@ package com.hwa.excelllll.excel
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.RectF
-import com.hwa.excelllll.core.SODoc
-import com.hwa.excelllll.core.SOPage
-import com.hwa.excelllll.core.SOSelectionLimits
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SOPage
+import com.hwa.excelllll.SOSelectionLimits
 
 /**
  * Page/cell coordinate and selection operations used by the Excel editor.

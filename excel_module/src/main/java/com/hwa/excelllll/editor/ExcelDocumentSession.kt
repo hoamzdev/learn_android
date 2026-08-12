@@ -1,7 +1,7 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
-import com.hwa.excelllll.core.SODocSaveListener
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SODocSaveListener
 
 class ExcelDocumentSession(
     document: SODoc
@@ -24,16 +24,14 @@ class ExcelDocumentSession(
     fun save(path: String, onComplete: (Int, Int) -> Unit) {
         state = ExcelDocumentState.SAVING
 
-        lifecycle.save(path, object : SODocSaveListener {
-            override fun onComplete(result: Int, extra: Int) {
-                state = if (result == 0) {
-                    ExcelDocumentState.READY
-                } else {
-                    ExcelDocumentState.ERROR
-                }
-                onComplete(result, extra)
+        lifecycle.save(path) { result, extra ->
+            state = if (result == 0) {
+                ExcelDocumentState.READY
+            } else {
+                ExcelDocumentState.ERROR
             }
-        })
+            onComplete(result, extra)
+        }
     }
 
     fun close() {

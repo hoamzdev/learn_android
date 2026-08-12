@@ -30,17 +30,15 @@
 
     </LinearLayout>
 
+
     <com.hwa.excelllll.ui.editor.ExcelViewerView
         android:id="@+id/viewExcel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/size30"
         app:layout_constraintBottom_toTopOf="@id/rcTabs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ln_name_file" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcTabs"
@@ -50,10 +48,45 @@
         android:orientation="horizontal"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ln_control"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/item_tab" />
+
+    <LinearLayout
+        android:id="@+id/ln_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/tvRotate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rotate"
+            android:paddingVertical="@dimen/size6"
+            android:gravity="center"
+            android:textColor="@color/black"
+            style="@style/TextView.CTA.16"/>
+
+        <TextView
+            android:id="@+id/tvEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Edit"
+            android:paddingVertical="@dimen/size6"
+            android:gravity="center"
+            android:textColor="@color/black"
+            style="@style/TextView.CTA.16"/>
+
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

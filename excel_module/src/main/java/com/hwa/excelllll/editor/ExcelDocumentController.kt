@@ -1,9 +1,9 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
-import com.hwa.excelllll.core.SOPage
-import com.hwa.excelllll.core.SOPageListener
-import com.hwa.excelllll.core.SODocSaveListener
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SOPage
+import com.hwa.excelllll.SOPageListener
+import com.hwa.excelllll.SODocSaveListener
 
 class ExcelDocumentController(
     val document: SODoc

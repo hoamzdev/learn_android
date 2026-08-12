@@ -1,6 +1,6 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Formatting commands for the current Excel selection.

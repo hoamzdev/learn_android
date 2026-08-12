@@ -6,12 +6,11 @@ import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import com.hwa.excelllll.core.InterfaceC1335o
-import com.hwa.excelllll.core.SOBitmap
-import com.hwa.excelllll.core.SODoc
-import com.hwa.excelllll.core.SOPageListener
-import com.hwa.excelllll.core.SORender
-import com.hwa.excelllll.core.SOPage
-import com.hwa.excelllll.editor.ExcelBitmapProvider
+import com.hwa.excelllll.SOBitmap
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SOPageListener
+import com.hwa.excelllll.SORender
+import com.hwa.excelllll.SOPage
 import androidx.core.graphics.createBitmap
 
 /**
@@ -32,6 +31,53 @@ class ExcelRenderController(
     private var displayedBufferIndex = -1
     private var bufferWidth = 0
     private var bufferHeight = 0
+    private var selectedPageX: Double? = null
+    private var selectedPageY: Double? = null
+
+    /** Selects a cell on the page currently held by the renderer. */
+    fun selectCell(pageX: Double, pageY: Double): Boolean {
+        val page = cachedPage ?: return false
+        document.clearSelection()
+        page.select(3, pageX, pageY)
+        selectedPageX = pageX
+        selectedPageY = pageY
+        return true
+    }
+
+    /** Commits the native cell edit buffer while keeping the same cell selected. */
+    fun commitAndReselectCell(onComplete: () -> Unit): Boolean {
+        val page = cachedPage ?: return false
+        val pageX = selectedPageX ?: return false
+        val pageY = selectedPageY ?: return false
+
+        // libso commits spreadsheet text only when selection enters another
+        // cell. clearSelection() alone is not enough, so briefly select a
+        // point just outside the current cell and then restore it.
+        val box = runCatching { page.selectionLimits()?.getBox() }.getOrNull()
+            ?: return false
+        val temporaryX = if (box.right > box.left) box.right + 1.0 else pageX + 1.0
+        val temporaryY = if (box.bottom > box.top) {
+            ((box.top + box.bottom) / 2f).toDouble()
+        } else {
+            pageY
+        }
+        page.select(3, temporaryX, temporaryY)
+        mainHandler.postDelayed({
+            if (page !== cachedPage) return@postDelayed
+            page.select(3, pageX, pageY)
+            onComplete()
+        }, CELL_COMMIT_DELAY_MS)
+        return true
+    }
+
+    fun releaseCachedPage() {
+        cancel()
+        cachedPage?.let { runCatching { it.discard() } }
+        cachedPage = null
+        cachedPageIndex = -1
+        selectedPageX = null
+        selectedPageY = null
+    }
 
     fun render(
         request: ExcelRenderRequest,
@@ -162,10 +208,7 @@ class ExcelRenderController(
     }
 
     fun close() {
-        cancel()
-        cachedPage?.let { runCatching { it.discard() } }
-        cachedPage = null
-        cachedPageIndex = -1
+        releaseCachedPage()
         renderBuffers = arrayOfNulls(2)
     }
 
@@ -175,5 +218,6 @@ class ExcelRenderController(
         private const val BASE_DOCUMENT_ZOOM = 1.0
         private const val MAX_PAGE_READY_ATTEMPTS = 20
         private const val PAGE_READY_RETRY_DELAY_MS = 50L
+        private const val CELL_COMMIT_DELAY_MS = 50L
     }
 }

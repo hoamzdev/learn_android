@@ -1,8 +1,8 @@
 package com.hwa.excelllll.editor
 
 import android.content.Context
-import com.hwa.excelllll.core.SODoc
-import com.hwa.excelllll.core.SODocSaveListener
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SODocSaveListener
 
 /**
  * One small API for the Excel screen.

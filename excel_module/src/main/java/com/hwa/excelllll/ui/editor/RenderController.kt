@@ -1,7 +1,7 @@
 package com.hwa.excelllll.ui.editor
 
 import com.hwa.excelllll.core.InterfaceC1335o
-import com.hwa.excelllll.core.SOBitmap
+import com.hwa.excelllll.SOBitmap
 import com.hwa.excelllll.ui.editor.DocPageView
 
 /**

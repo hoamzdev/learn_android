@@ -2,6 +2,7 @@ package com.hwa.excelllll
 
 import android.content.Context
 import android.graphics.PointF
+import android.graphics.RectF
 
 /**
  * JNI-backed document object.
@@ -63,6 +64,7 @@ open class SODoc(
     external fun getHasBeenModified(): Boolean
     external fun getIndentationLevel(): IntArray?
     external fun getNumEdits(): Int
+    external fun getNumPagesInternal(): Int
     external fun getPage(index: Int, listener: SOPageListener?): SOPage?
     external fun getSelectedCellFormat(): String?
     external fun getSelectedColumnWidth(): Float
@@ -143,14 +145,32 @@ open class SODoc(
     private external fun nativeSetSearchStart(page: Int, x: Float, y: Float)
     private external fun nativeCloseSearch()
 
-    open fun pageCount(): Int = getNumEdits().let { getPageCountFallback() }
+    /** For Excel documents, every native page represents one sheet. */
+    open fun pageCount(): Int = getNumPagesInternal().coerceAtLeast(0)
 
-    /**
-     * The original SODoc source shown by the user did not expose a public
-     * page-count native method. Keep this isolated until the actual SO build
-     * provides it.
-     */
-    protected open fun getPageCountFallback(): Int = 0
+    fun sheetCount(): Int = pageCount()
+
+    fun sheetName(index: Int): String? {
+        if (index !in 0 until sheetCount()) return null
+        // Artifex initializes page metadata (including the Excel tab title)
+        // through the getPage() path that has an SOPageListener. Passing null
+        // can return a page handle whose title has not been populated yet.
+        val page = getPage(
+            index,
+            object : SOPageListener {
+                override fun update(rect: RectF) = Unit
+            }
+        ) ?: return null
+        return try {
+            page.getPageTitle()?.takeIf { it.isNotBlank() }
+        } finally {
+            runCatching { page.discard() }
+        }
+    }
+
+    fun sheetNames(): List<String> = List(sheetCount()) { index ->
+        sheetName(index) ?: "Sheet ${index + 1}"
+    }
 
     fun selectionNaturalSize(): PointF {
         val raw = getSelectionNaturalDimensionsInternal() ?: return PointF()

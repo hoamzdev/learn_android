@@ -1,7 +1,7 @@
 package com.hwa.excelllll.ui.editor
 
 import android.graphics.Point
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Converts Android touch coordinates to native page coordinates and

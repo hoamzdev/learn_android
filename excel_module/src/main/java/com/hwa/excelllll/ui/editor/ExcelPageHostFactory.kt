@@ -1,7 +1,7 @@
 package com.hwa.excelllll.ui.editor
 
 import android.content.Context
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.editor.ExcelBitmapProvider
 
 object ExcelPageHostFactory {

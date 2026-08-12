@@ -1,6 +1,6 @@
 package com.hwa.excelllll.excel
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 sealed interface ExcelDocumentState {
     data object Empty : ExcelDocumentState

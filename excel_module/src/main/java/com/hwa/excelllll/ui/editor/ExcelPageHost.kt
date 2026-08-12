@@ -8,8 +8,8 @@ import android.view.ScaleGestureDetector
 import android.view.ViewGroup
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import com.hwa.excelllll.core.SOBitmap
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SOBitmap
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.editor.ExcelBitmapProvider
 import com.hwa.excelllll.editor.ExcelRenderController
 import com.hwa.excelllll.editor.ExcelRenderRequest
@@ -41,6 +41,9 @@ class ExcelPageHost(
     private var renderedOffsetX = 0
     private var renderedOffsetY = 0
     private var renderedScale = 1.0
+
+    /** Called after a non-dragging single tap selects a spreadsheet cell. */
+    var onCellSelected: (() -> Unit)? = null
 
     private val scaleDetector = ScaleGestureDetector(
         context,
@@ -84,6 +87,12 @@ class ExcelPageHost(
         scale: Double = DEFAULT_SCALE,
         onComplete: (Int) -> Unit = {}
     ) {
+        if (pageIndex != currentPage) {
+            offsetX = 0
+            offsetY = 0
+            renderedOffsetX = 0
+            renderedOffsetY = 0
+        }
         currentPage = pageIndex
         currentScale = scale
         renderViewport(onComplete)
@@ -142,6 +151,7 @@ class ExcelPageHost(
         return super.onInterceptTouchEvent(event)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -176,7 +186,13 @@ class ExcelPageHost(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 removeCallbacks(viewportRenderAction)
                 viewportRenderScheduled = false
-                if (dragging && !scaleDetector.isInProgress) renderViewport()
+                if (dragging && !scaleDetector.isInProgress) {
+                    renderViewport()
+                } else if (event.actionMasked == MotionEvent.ACTION_UP &&
+                    !scaleDetector.isInProgress
+                ) {
+                    selectCellAt(event.x, event.y)
+                }
                 dragging = false
                 parent?.requestDisallowInterceptTouchEvent(false)
                 performClick()
@@ -184,6 +200,16 @@ class ExcelPageHost(
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun selectCellAt(viewX: Float, viewY: Float) {
+        val documentZoom = currentScale.coerceAtLeast(MIN_SCALE)
+        val pageX = (viewX + offsetX) / documentZoom
+        val pageY = (viewY + offsetY) / documentZoom
+        if (renderer.selectCell(pageX, pageY)) {
+            onCellSelected?.invoke()
+            renderViewport()
+        }
     }
 
     private val viewportRenderAction = Runnable {
@@ -222,6 +248,13 @@ class ExcelPageHost(
     fun cancelRender() {
         renderer.cancel()
     }
+
+    fun releaseCurrentPage() {
+        renderer.releaseCachedPage()
+    }
+
+    fun commitAndReselectCell(onComplete: () -> Unit): Boolean =
+        renderer.commitAndReselectCell(onComplete)
 
     fun close() {
         removeCallbacks(viewportRenderAction)

@@ -1,6 +1,6 @@
 package com.hwa.excelllll.editor
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Keeps the UI independent from the concrete SODoc implementation.

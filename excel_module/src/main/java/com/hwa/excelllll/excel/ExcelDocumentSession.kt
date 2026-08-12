@@ -2,7 +2,7 @@ package com.hwa.excelllll.excel
 
 import android.content.Context
 import android.net.Uri
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Owns the lifetime of one Excel document.

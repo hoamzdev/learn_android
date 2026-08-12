@@ -1,9 +1,9 @@
 package com.hwa.excelllll.editor
 
 import android.graphics.PointF
-import com.hwa.excelllll.core.SOSelectionLimits
-import com.hwa.excelllll.core.SOSelectionTableRange
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SOSelectionLimits
+import com.hwa.excelllll.SOSelectionTableRange
+import com.hwa.excelllll.SODoc
 
 /**
  * Read/write access to the native selection.

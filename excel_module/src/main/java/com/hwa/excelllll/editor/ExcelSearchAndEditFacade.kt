@@ -1,7 +1,7 @@
 package com.hwa.excelllll.editor
 
 import android.content.Context
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 class ExcelSearchAndEditFacade(
     document: SODoc,

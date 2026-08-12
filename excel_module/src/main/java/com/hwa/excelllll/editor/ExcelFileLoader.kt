@@ -2,7 +2,7 @@ package com.hwa.excelllll.editor
 
 import android.content.Context
 import android.net.Uri
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 class ExcelFileLoader(
     private val nativeLoader: NativeDocumentLoader

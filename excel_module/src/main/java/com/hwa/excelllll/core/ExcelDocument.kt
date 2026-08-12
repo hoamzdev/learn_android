@@ -1,5 +1,9 @@
 package com.hwa.excelllll.core
 
+import com.hwa.excelllll.SODoc
+import com.hwa.excelllll.SODocSaveListener
+import com.hwa.excelllll.SOPage
+
 /**
  * Small facade containing only operations needed by an Excel viewer/editor.
  */

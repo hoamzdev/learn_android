@@ -29,6 +29,11 @@ class TabSheetAdapter :
         return TabViewHolder(binding)
     }
 
+    override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.onBindData(item)
+    }
+
     inner class TabViewHolder(override val binding: ItemTabBinding) :
         BaseViewHolder<String, ItemTabBinding>(binding) {
 

@@ -26,6 +26,7 @@ open class SOPage(
 
     external fun discard()
     external fun getHorizontalRuler(): FloatArray?
+    external fun getPageTitle(): String?
     external fun getVerticalRuler(): FloatArray?
     external fun objectAtPoint(x: Float, y: Float): SOHyperlink?
     external fun select(mode: Int, x: Double, y: Double)

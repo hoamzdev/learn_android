@@ -5,8 +5,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.view.ViewGroup
-import com.hwa.excelllll.core.SOBitmap
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SOBitmap
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.ui.editor.DocPageView
 
 /**

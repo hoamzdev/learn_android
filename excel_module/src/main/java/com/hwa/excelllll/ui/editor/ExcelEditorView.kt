@@ -3,7 +3,7 @@ package com.hwa.excelllll.ui.editor
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Minimal host View for the Artifex page renderer.

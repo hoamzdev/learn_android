@@ -5,19 +5,33 @@ import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.core.DocumentLoader
 import com.hwa.excelllll.core.DocumentOpenResult
-import com.hwa.excelllll.core.SOBitmap
+import com.hwa.excelllll.SOBitmap
 import com.hwa.excelllll.editor.ExcelBitmapProvider
+import com.hwa.excelllll.editor.ExcelSelectionModel
 import com.hwa.excelllll.excel.ExcelDocumentManager
 import com.hwa.excelllll.excel.ExcelNativeLoader
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
+
+data class ExcelSelectionState(
+    val sheetIndex: Int,
+    val text: String,
+    val firstRow: Int?,
+    val firstColumn: Int?,
+    val rowCount: Int,
+    val columnCount: Int,
+    val canEditText: Boolean,
+    val canCopy: Boolean,
+    val canDelete: Boolean,
+    val canPaste: Boolean
+)
 
 class ExcelViewerView @JvmOverloads constructor(
     context: Context,
@@ -34,12 +48,15 @@ class ExcelViewerView @JvmOverloads constructor(
         setTextColor(Color.DKGRAY)
         textSize = 16f
         visibility = GONE
-        setPadding(10, 10, 10, 10)
+        clipToPadding = false
+        setPadding(10, 10, 10, 0)
     }
     private val worker = Executors.newSingleThreadExecutor()
     private val requestGeneration = AtomicInteger()
     private var pageHost: ExcelPageHost? = null
     private var released = false
+    private var currentSheetIndex = 0
+    private var editor: ExcelEditorController? = null
 
     private val documentManager = ExcelDocumentManager(
         context.applicationContext,
@@ -52,10 +69,24 @@ class ExcelViewerView @JvmOverloads constructor(
     )
 
     /** Called on the main thread after the first viewport is rendered. */
-    var onDocumentReady: (() -> Unit)? = null
+    var onDocumentReady: ((SODoc) -> Unit)? = null
 
     /** Called on the main thread for open and render failures. */
     var onDocumentError: ((String) -> Unit)? = null
+
+    /** Preferred callback containing the selected cell/range and edit capabilities. */
+    var onCellSelected: ((ExcelSelectionState) -> Unit)? = null
+
+    /** Called after the sheet list changes. */
+    var onSheetListChanged: ((List<String>) -> Unit)? = null
+
+    /** Selection helper for enabling/disabling edit controls. */
+    val selection: ExcelSelectionModel?
+        get() = editor?.selection
+
+    /** Index of the sheet currently displayed by this view. */
+    val selectedSheetIndex: Int
+        get() = currentSheetIndex
 
     init {
         setBackgroundColor(Color.WHITE)
@@ -79,7 +110,7 @@ class ExcelViewerView @JvmOverloads constructor(
 
     fun open(uri: Uri?) {
         check(!released) { "ExcelViewerView has already been closed" }
-        if(uri == null){
+        if (uri == null) {
             return
         }
         if (!isMainThread()) {
@@ -91,6 +122,8 @@ class ExcelViewerView @JvmOverloads constructor(
         pageHost?.close()
         pageHost?.let(::removeView)
         pageHost = null
+        editor = null
+        currentSheetIndex = 0
         showLoading()
 
         worker.execute {
@@ -107,8 +140,42 @@ class ExcelViewerView @JvmOverloads constructor(
         }
     }
 
+    /** Renders the Excel sheet at [index]. Sheet indexes start at 0. */
+    fun showSheet(index: Int, onComplete: (Int) -> Unit = {}) {
+        check(!released) { "ExcelViewerView has already been closed" }
+        if (!isMainThread()) {
+            post { showSheet(index, onComplete) }
+            return
+        }
+
+        val document = documentManager.current()
+        if (document == null) {
+            onComplete(SHEET_NOT_READY)
+            return
+        }
+        if (index !in 0 until document.sheetCount()) {
+            onComplete(SHEET_INDEX_OUT_OF_BOUNDS)
+            return
+        }
+
+        val host = pageHost
+        if (host == null || host.width <= 0 || host.height <= 0) {
+            onComplete(SHEET_NOT_READY)
+            return
+        }
+
+        showLoading()
+        host.render(index, host.width, host.height) { status ->
+            if (status == 0) {
+                currentSheetIndex = index
+                hideLoading()
+            } else showError("Không render được sheet $index (mã lỗi: $status)")
+            onComplete(status)
+        }
+    }
+
     private fun showDocument(
-        document: com.hwa.excelllll.core.SODoc,
+        document: SODoc,
         generation: Int
     ) {
         val host = ExcelPageHost(
@@ -118,24 +185,29 @@ class ExcelViewerView @JvmOverloads constructor(
                 override fun create(bitmap: android.graphics.Bitmap): SOBitmap = SOBitmap(bitmap)
             }
         )
+        editor = ExcelEditorController(document, context.applicationContext)
+        currentSheetIndex = 0
+        host.onCellSelected = {
+            dispatchSelectionChanged()
+        }
         pageHost = host
         addView(
             host,
             0,
             LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
             )
         )
-        progress.visibility = View.GONE
-        message.visibility = View.GONE
+        progress.visibility = GONE
+        message.visibility = GONE
 
         host.post {
             if (released || generation != requestGeneration.get()) return@post
             host.render(0, host.width, host.height) { status ->
                 if (released || generation != requestGeneration.get()) return@render
                 if (status == 0) {
-                    onDocumentReady?.invoke()
+                    onDocumentReady?.invoke(document)
                     hideLoading()
                 } else {
                     showError("Không render được file (mã lỗi: $status)")
@@ -149,7 +221,152 @@ class ExcelViewerView @JvmOverloads constructor(
         message.visibility = GONE
     }
 
-    private fun hideLoading(){
+    /** Returns the text of the currently selected cell/range. */
+    fun selectedText(): String = editor?.selection?.text().orEmpty()
+
+    /** Returns a snapshot; edits still act on the native selection kept by this view. */
+    fun selectedCell(): ExcelSelectionState? {
+        val model = editor?.selection ?: return null
+        val range = runCatching { model.tableRange() }.getOrNull()
+        return ExcelSelectionState(
+            sheetIndex = currentSheetIndex,
+            text = model.text().orEmpty(),
+            firstRow = range?.let { runCatching { it.firstRow() }.getOrNull() },
+            firstColumn = range?.let { runCatching { it.firstColumn() }.getOrNull() },
+            rowCount = range?.let { runCatching { it.rowCount() }.getOrDefault(1) } ?: 1,
+            columnCount = range?.let { runCatching { it.columnCount() }.getOrDefault(1) } ?: 1,
+            canEditText = model.canEditText(),
+            canCopy = model.canCopy(),
+            canDelete = model.canDelete(),
+            canPaste = model.canPaste()
+        )
+    }
+
+    private fun dispatchSelectionChanged() {
+        val state = selectedCell() ?: return
+        onCellSelected?.invoke(state)
+    }
+
+    fun replaceSelection(value: String): Boolean = editIf(
+        allowed = { it.selection.canEditText() },
+        action = { it.replaceSelection(value) }
+    )
+
+    fun deleteSelection(): Boolean = editIf(
+        allowed = { it.selection.canDelete() },
+        action = { it.deleteSelection() }
+    )
+
+    fun copy(): Boolean {
+        val controller = editor ?: return false
+        if (!controller.selection.canCopy()) return false
+        controller.copy()
+        return true
+    }
+
+    fun cut(): Boolean = editIf(
+        allowed = { it.selection.canCopy() && it.selection.canDelete() },
+        action = { it.cut() }
+    )
+
+    fun paste(): Boolean = editIf(
+        allowed = { it.selection.canPaste() },
+        action = { it.paste() }
+    )
+
+    fun setBoldCell(enabled: Boolean): Boolean = edit { it.setBold(enabled) }
+    fun setItalicCell(enabled: Boolean): Boolean = edit { it.setItalic(enabled) }
+    fun setUnderlineCell(enabled: Boolean): Boolean = edit { it.setUnderline(enabled) }
+    fun setStrikeThroughCell(enabled: Boolean): Boolean = edit { it.setStrikeThrough(enabled) }
+    fun setFontNameCell(name: String): Boolean = edit { it.setFontName(name) }
+    fun setFontSizeCell(size: Double): Boolean = edit { it.setFontSize(size) }
+    fun setFontColorCell(color: String): Boolean = edit { it.setFontColor(color) }
+    fun setFillColorCell(color: String): Boolean = edit { it.setFillColor(color) }
+    fun setBackgroundColorCell(color: String): Boolean = edit { it.setBackgroundColor(color) }
+    fun setBackgroundTransparentCell(): Boolean = edit { it.setBackgroundTransparent() }
+    fun setAlignmentCell(value: Int): Boolean = edit { it.setAlignment(value) }
+    fun setLineColorCell(color: String): Boolean = edit { it.setLineColor(color) }
+    fun setCellFormatCell(format: String): Boolean = edit { it.setCellFormat(format) }
+    fun setColumnWidthCell(width: Float): Boolean = edit { it.setColumnWidth(width) }
+    fun setRowHeightCell(height: Float): Boolean = edit { it.setRowHeight(height) }
+
+    fun sheetCount(): Int = documentManager.current()?.sheetCount() ?: 0
+
+    fun sheetNames(): List<String> = documentManager.current()?.sheetNames().orEmpty()
+
+    /** Refuses to delete the only remaining sheet. */
+    fun deleteCurrentSheet(): Boolean {
+        val count = sheetCount()
+        if (count <= 1 || currentSheetIndex !in 0 until count) return false
+        val deletedIndex = currentSheetIndex
+        val nextIndex = deletedIndex.coerceAtMost(count - 2)
+        return mutateSheets(nextIndex) { it.deleteSheet(deletedIndex) }
+    }
+
+    fun moveCurrentSheet(toIndex: Int): Boolean {
+        return moveSheet(currentSheetIndex, toIndex)
+    }
+
+    fun moveSheet(fromIndex: Int, toIndex: Int): Boolean {
+        val count = sheetCount()
+        if (fromIndex !in 0 until count || toIndex !in 0 until count) return false
+        if (toIndex == fromIndex) return true
+        val sheetToShow = when (currentSheetIndex) {
+            fromIndex -> toIndex
+            in (fromIndex + 1)..toIndex -> currentSheetIndex - 1
+            in toIndex..<fromIndex -> currentSheetIndex + 1
+            else -> currentSheetIndex
+        }
+        return mutateSheets(sheetToShow) { it.moveSheet(fromIndex, toIndex) }
+    }
+
+    private fun mutateSheets(
+        sheetToShow: Int,
+        action: (ExcelEditorController) -> Unit
+    ): Boolean {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val controller = editor ?: return false
+        pageHost?.releaseCurrentPage()
+        action(controller)
+        currentSheetIndex = sheetToShow
+        showSheet(sheetToShow) { status ->
+            if (status == 0) onSheetListChanged?.invoke(sheetNames())
+        }
+        return true
+    }
+
+    /** Re-renders the displayed sheet after a successful edit. */
+    fun refresh(onComplete: (Int) -> Unit = {}) {
+        showSheet(currentSheetIndex, onComplete)
+    }
+
+    private fun edit(action: (ExcelEditorController) -> Unit): Boolean =
+        editIf(allowed = { true }, action = action)
+
+    private fun editIf(
+        allowed: (ExcelEditorController) -> Boolean,
+        action: (ExcelEditorController) -> Unit
+    ): Boolean {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val controller = editor ?: return false
+        if (!allowed(controller)) return false
+        action(controller)
+
+        // libso keeps cell mutations in an edit buffer until selection moves
+        // to another cell. Apply the same commit flow to every edit command,
+        // not only text replacement, and render only after it has completed.
+        val commitStarted = pageHost?.commitAndReselectCell {
+            refresh()
+            dispatchSelectionChanged()
+        } == true
+        if (!commitStarted) {
+            refresh()
+            dispatchSelectionChanged()
+        }
+        return true
+    }
+
+    private fun hideLoading() {
         progress.visibility = GONE
         message.visibility = GONE
     }
@@ -169,10 +386,16 @@ class ExcelViewerView @JvmOverloads constructor(
         requestGeneration.incrementAndGet()
         pageHost?.close()
         pageHost = null
+        editor = null
         worker.execute { documentManager.close() }
         worker.shutdown()
     }
 
     private fun isMainThread(): Boolean =
         android.os.Looper.myLooper() == android.os.Looper.getMainLooper()
+
+    companion object {
+        const val SHEET_NOT_READY = -2
+        const val SHEET_INDEX_OUT_OF_BOUNDS = -3
+    }
 }

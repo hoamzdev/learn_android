@@ -1,6 +1,6 @@
 package com.hwa.excelllll.excel
 
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 
 /**
  * Implement this using the exact static/native document-open method found

@@ -13,7 +13,7 @@ abstract class BaseListAdapter<T, VB : ViewBinding, VH : BaseViewHolder<T, VB>>(
         .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).build()
 ) {
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
+    open override fun onBindViewHolder(holder: VH, position: Int) {
         if (position < currentList.size) {
             if (holder.onBindData(getItem(position), position).not()) {
                 holder.onBindData(getItem(position))

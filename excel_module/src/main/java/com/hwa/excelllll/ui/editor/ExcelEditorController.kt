@@ -1,7 +1,7 @@
 package com.hwa.excelllll.ui.editor
 
 import android.content.Context
-import com.hwa.excelllll.core.SODoc
+import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.editor.ExcelCellEditor
 import com.hwa.excelllll.editor.ExcelClipboardController
 import com.hwa.excelllll.editor.ExcelDocumentSession
@@ -15,7 +15,7 @@ import com.hwa.excelllll.editor.ExcelSelectionModel
  * UI should not need to know the obfuscated Artifex method names.
  */
 class ExcelEditorController(
-    document: SODoc,
+    private val document: SODoc,
     context: Context? = null
 ) {
     val session = ExcelDocumentSession(document)
@@ -94,6 +94,11 @@ class ExcelEditorController(
         session.markModified()
     }
 
+    fun setStrikeThrough(enabled: Boolean) {
+        formatting.strikeThrough(enabled)
+        session.markModified()
+    }
+
     fun setFontSize(size: Double) {
         formatting.fontSize(size)
         session.markModified()
@@ -114,8 +119,83 @@ class ExcelEditorController(
         session.markModified()
     }
 
+    fun setBackgroundColor(color: String) {
+        formatting.backgroundColor(color)
+        session.markModified()
+    }
+
+    fun setBackgroundTransparent() {
+        formatting.backgroundTransparent()
+        session.markModified()
+    }
+
     fun setAlignment(value: Int) {
         formatting.alignment(value)
+        session.markModified()
+    }
+
+    fun setVerticalAlignment(value: Int) {
+        formatting.verticalAlignment(value)
+        session.markModified()
+    }
+
+    fun setRotation(degrees: Float) {
+        formatting.rotation(degrees)
+        session.markModified()
+    }
+
+    fun setLineColor(color: String) {
+        formatting.lineColor(color)
+        session.markModified()
+    }
+
+    fun setLineType(type: Int) {
+        formatting.lineType(type)
+        session.markModified()
+    }
+
+    fun setLineWidth(width: Float) {
+        formatting.lineWidth(width)
+        session.markModified()
+    }
+
+    fun setCellFormat(format: String) {
+        document.setSelectedCellFormat(format)
+        session.markModified()
+    }
+
+    fun setColumnWidth(width: Float) {
+        document.setSelectedColumnWidth(width)
+        session.markModified()
+    }
+
+    fun setRowHeight(height: Float) {
+        document.setSelectedRowHeight(height)
+        session.markModified()
+    }
+
+    fun setIndentationLevel(level: Int) {
+        document.setIndentationLevel(level)
+        session.markModified()
+    }
+
+    fun addSheet(index: Int) {
+        document.addBlankPage(index)
+        session.markModified()
+    }
+
+    fun duplicateSheet(index: Int) {
+        document.duplicatePage(index)
+        session.markModified()
+    }
+
+    fun deleteSheet(index: Int) {
+        document.deletePage(index)
+        session.markModified()
+    }
+
+    fun moveSheet(from: Int, to: Int) {
+        document.movePage(from, to)
         session.markModified()
     }
 
