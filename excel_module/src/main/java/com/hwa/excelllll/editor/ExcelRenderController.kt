@@ -113,9 +113,11 @@ class ExcelRenderController(
         val bitmap = soBitmap.bitmap().apply {
             eraseColor(android.graphics.Color.WHITE)
         }
-        val fit = page.zoomToFitRect(bitmap.width, bitmap.height)
-        val fitZoom = maxOf(fit.x.toDouble(), fit.y.toDouble())
-        val renderZoom = (fitZoom * request.scale).takeIf {
+        // Use a document-independent base zoom. Fitting the whole sheet to the
+        // viewport makes large sheets start with much smaller text than small
+        // sheets. A fixed base keeps the initial cell/text size consistent;
+        // page dimensions only determine how far the viewport can scroll.
+        val renderZoom = (BASE_DOCUMENT_ZOOM * request.scale).takeIf {
             it.isFinite() && it > 0.0
         } ?: request.scale.coerceAtLeast(1.0)
         onPageSize(page.sizeAtZoom(renderZoom))
@@ -170,6 +172,7 @@ class ExcelRenderController(
 
     companion object {
         const val PAGE_UNAVAILABLE = -1
+        private const val BASE_DOCUMENT_ZOOM = 1.0
         private const val MAX_PAGE_READY_ATTEMPTS = 20
         private const val PAGE_READY_RETRY_DELAY_MS = 50L
     }
