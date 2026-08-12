@@ -18,7 +18,6 @@ class MainActivity5 : BaseActivity<ActivityMain5Binding>(ActivityMain5Binding::i
         val intent = Intent(this, MainActivity6::class.java).apply {
             data = uri
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(KEY_JSON_FILE, uri.toString())
         }
         startActivity(intent)
     }

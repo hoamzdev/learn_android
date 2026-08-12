@@ -113,12 +113,13 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(project(":app-domain"))
     implementation(project(":app-data"))
-    implementation(project(":excel-viewer"))
+    implementation(project(":excel_module"))
     implementation(libs.glide)
     implementation(libs.gson)
     implementation(libs.retrofit)
@@ -148,7 +149,6 @@ dependencies {
 
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     implementation("androidx.multidex:multidex:2.0.1")
 

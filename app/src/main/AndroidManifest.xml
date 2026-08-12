@@ -38,11 +38,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.common.nointernet.NoInternetActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".ui.main.MainActivity6"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

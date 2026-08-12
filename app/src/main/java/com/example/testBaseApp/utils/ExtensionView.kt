@@ -7,35 +7,13 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import androidx.annotation.Keep
-import com.example.testBaseApp.ui.common.nointernet.NoInternetActivity
 
 
 import java.util.WeakHashMap
 import kotlin.collections.set
 import kotlin.let
 
-@Keep
-fun View.tap(action: (view: View?) -> Unit) {
-    setOnClickListener(object : TapListener() {
-        override fun onTap(v: View?) {
-            try {
-                if (!SafeClickManager.canClick()) return
-                if (!CheckInternet.haveNetworkConnection(context)) {
-                    context.findActivity()?.let {
-                        val intent = Intent(it, NoInternetActivity::class.java)
-                        it.startActivity(intent)
-                        it.overridePendingTransition(0, 0)
-                    }
-                } else {
-                    action(v)
-                }
-            } catch (e: Exception) {
-                Log.e("TapListener", "Error: ${e.message}")
-                e.printStackTrace()
-            }
-        }
-    })
-}
+
 
 @Keep
 fun Context.findActivity(): Activity? {

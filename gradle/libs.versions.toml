@@ -26,6 +26,7 @@ activityKtx = "1.13.0"
 webkit = "1.16.0"
 fragment = "1.8.9"
 navigationUiKtx = "2.9.8"
+roomKtx = "2.8.4"
 
 
 [libraries]
@@ -56,6 +57,7 @@ dimensplib = { module = "com.github.beomzezojoy:DimenSpLib", version.ref = "dime
 dimenlib = { module = "com.github.beomzezojoy:DimenLib", version.ref = "dimenlib" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

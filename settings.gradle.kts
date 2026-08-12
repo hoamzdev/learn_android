@@ -26,4 +26,4 @@ rootProject.name = "BaseApp"
 include(":app")
 include(":app-domain")
 include(":app-data")
-include(":excel-viewer")
+include(":excel_module")

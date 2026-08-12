@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:fitsSystemWindows="false"
     tools:context=".ui.main.MainActivity6">
 
     <LinearLayout
@@ -14,56 +13,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_37B43D"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.example.testBaseApp.ui.common.component.MovableText
             android:id="@+id/tv_name_file"
+            style="@style/TextView.Subtext.14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/next"
             android:layout_marginTop="@dimen/size30"
             android:background="@color/color_37B43D"
-            android:paddingVertical="@dimen/size5"
-            android:textColor="@color/white"
             android:gravity="center_vertical|center_horizontal"
-            style="@style/TextView.Subtext.14"/>
+            android:paddingVertical="@dimen/size5"
+            android:text="@string/next"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
-    <WebView
-        android:id="@+id/webView"
-        android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/ln_name_file"
-        app:layout_constraintBottom_toTopOf="@id/rcTabs"
-        android:scrollbars="vertical"
+    <com.hwa.excelllll.ui.editor.ExcelViewerView
+        android:id="@+id/viewExcel"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-
-    <ProgressBar
-        android:visibility="invisible"
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/size30"
         app:layout_constraintBottom_toTopOf="@id/rcTabs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:indeterminateTint="@color/color_tag_diagnosis"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ln_name_file" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcTabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size35"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/color_37B43D"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:background="@color/color_37B43D"
-        tools:listitem="@layout/item_tab"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_tab" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
