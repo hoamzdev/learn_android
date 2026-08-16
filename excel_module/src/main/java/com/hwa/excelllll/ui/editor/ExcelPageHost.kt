@@ -2,9 +2,14 @@ package com.hwa.excelllll.ui.editor
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.RectF
+import android.graphics.drawable.GradientDrawable
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
@@ -31,19 +36,29 @@ class ExcelPageHost(
     private var currentPage = 0
     private var currentScale = 1.0
     private var contentSize = Point()
-    private var offsetX = 0
-    private var offsetY = 0
+    private var offsetX = 0.0
+    private var offsetY = 0.0
     private var lastX = 0f
     private var lastY = 0f
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var dragging = false
     private var viewportRenderScheduled = false
-    private var renderedOffsetX = 0
-    private var renderedOffsetY = 0
+    private var renderedOffsetX = 0.0
+    private var renderedOffsetY = 0.0
     private var renderedScale = 1.0
+
+    private lateinit var handles: Array<View>
+    private var isDraggingHandle = false
 
     /** Called after a non-dragging single tap selects a spreadsheet cell. */
     var onCellSelected: (() -> Unit)? = null
+
+    private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            selectCellAt(e.x, e.y)
+            return true
+        }
+    })
 
     private val scaleDetector = ScaleGestureDetector(
         context,
@@ -59,10 +74,10 @@ class ExcelPageHost(
                     contentSize.y = (contentSize.y * ratio).toInt()
                 }
 
-                offsetX = ((offsetX + detector.focusX) * ratio - detector.focusX).toInt()
-                    .coerceIn(0, (contentSize.x - width).coerceAtLeast(0))
-                offsetY = ((offsetY + detector.focusY) * ratio - detector.focusY).toInt()
-                    .coerceIn(0, (contentSize.y - height).coerceAtLeast(0))
+                offsetX = ((offsetX + detector.focusX) * ratio - detector.focusX)
+                    .coerceIn(0.0, (contentSize.x - width).coerceAtLeast(0).toDouble())
+                offsetY = ((offsetY + detector.focusY) * ratio - detector.focusY)
+                    .coerceIn(0.0, (contentSize.y - height).coerceAtLeast(0).toDouble())
                 currentScale = newScale
                 updatePreviewTransform()
                 scheduleViewportRender()
@@ -78,6 +93,7 @@ class ExcelPageHost(
     )
 
     init {
+        handles = Array(2) { index -> SelectionHandle(context, if (index == 0) 0 else 3) }
         addView(
             surface,
             LayoutParams(
@@ -85,6 +101,7 @@ class ExcelPageHost(
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         )
+        handles.forEach { addView(it) }
         isClickable = true
     }
 
@@ -96,10 +113,10 @@ class ExcelPageHost(
         onComplete: (Int) -> Unit = {}
     ) {
         if (pageIndex != currentPage) {
-            offsetX = 0
-            offsetY = 0
-            renderedOffsetX = 0
-            renderedOffsetY = 0
+            offsetX = 0.0
+            offsetY = 0.0
+            renderedOffsetX = 0.0
+            renderedOffsetY = 0.0
             currentScale = scale ?: DEFAULT_SCALE
         } else if (scale != null) {
             currentScale = scale
@@ -123,8 +140,8 @@ class ExcelPageHost(
                 width = width,
                 height = height,
                 scale = currentScale,
-                offsetX = offsetX,
-                offsetY = offsetY
+                offsetX = offsetX.toInt(),
+                offsetY = offsetY.toInt()
             ),
             onBitmapReady = { bitmap ->
                 renderedOffsetX = requestedOffsetX
@@ -132,11 +149,12 @@ class ExcelPageHost(
                 renderedScale = requestedScale
                 show(bitmap)
                 updatePreviewTransform()
+                updateSelectionHandles()
             },
             onPageSize = { size ->
                 contentSize = size
-                offsetX = offsetX.coerceIn(0, (size.x - width).coerceAtLeast(0))
-                offsetY = offsetY.coerceIn(0, (size.y - height).coerceAtLeast(0))
+                offsetX = offsetX.coerceIn(0.0, (size.x - width).coerceAtLeast(0).toDouble())
+                offsetY = offsetY.coerceIn(0.0, (size.y - height).coerceAtLeast(0).toDouble())
             },
             onComplete = onComplete
         )
@@ -144,10 +162,12 @@ class ExcelPageHost(
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         scaleDetector.onTouchEvent(event)
+        gestureDetector.onTouchEvent(event)
         return super.dispatchTouchEvent(event)
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        if (isDraggingHandle) return true
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 lastX = event.x
@@ -185,17 +205,18 @@ class ExcelPageHost(
             }
             MotionEvent.ACTION_MOVE -> {
                 if (scaleDetector.isInProgress || event.pointerCount > 1) return true
+                
                 val dx = lastX - event.x
                 val dy = lastY - event.y
                 if (!dragging && (kotlin.math.abs(dx) > touchSlop || kotlin.math.abs(dy) > touchSlop)) {
                     dragging = true
                 }
                 if (dragging) {
-                    offsetX = (offsetX + dx.toInt()).coerceIn(
-                        0, (contentSize.x - width).coerceAtLeast(0)
+                    offsetX = (offsetX + dx).coerceIn(
+                        0.0, (contentSize.x - width).coerceAtLeast(0).toDouble()
                     )
-                    offsetY = (offsetY + dy.toInt()).coerceIn(
-                        0, (contentSize.y - height).coerceAtLeast(0)
+                    offsetY = (offsetY + dy).coerceIn(
+                        0.0, (contentSize.y - height).coerceAtLeast(0).toDouble()
                     )
                     lastX = event.x
                     lastY = event.y
@@ -216,12 +237,9 @@ class ExcelPageHost(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 removeCallbacks(viewportRenderAction)
                 viewportRenderScheduled = false
+                
                 if (dragging && !scaleDetector.isInProgress) {
                     renderViewport()
-                } else if (event.actionMasked == MotionEvent.ACTION_UP &&
-                    !scaleDetector.isInProgress
-                ) {
-                    selectCellAt(event.x, event.y)
                 }
                 dragging = false
                 parent?.requestDisallowInterceptTouchEvent(false)
@@ -242,20 +260,35 @@ class ExcelPageHost(
         }
     }
 
+    private fun extendSelectionTo(viewX: Float, viewY: Float, handleKind: Int = -1) {
+        val documentZoom = currentScale.coerceAtLeast(MIN_SCALE)
+        val pageX = (viewX + offsetX) / documentZoom
+        val pageY = (viewY + offsetY) / documentZoom
+        
+        val mode = when (handleKind) {
+            0 -> 0 // Move Start
+            3 -> 1 // Move End
+            else -> 2 // General extend
+        }
+        
+        if (renderer.extendSelection(pageX, pageY, mode)) {
+            onCellSelected?.invoke()
+            // Update handles position instantly
+            updateSelectionHandles()
+            // Render the blue highlight overlay as fast as possible
+            if (isDraggingHandle) renderViewport() else scheduleViewportRender()
+        }
+    }
+
     private val viewportRenderAction = Runnable {
         viewportRenderScheduled = false
         renderViewport()
     }
 
     private fun scheduleViewportRender() {
-        // Throttle viewport renders while the finger is moving. Resetting the
-        // callback on every ACTION_MOVE behaves like a debounce: during a
-        // continuous drag it never runs, so fresh content only appears after
-        // ACTION_UP. Keeping the first scheduled frame lets the viewport load
-        // continuously without starting a native render for every move event.
         if (viewportRenderScheduled) return
         viewportRenderScheduled = true
-        postDelayed(viewportRenderAction, VIEWPORT_RENDER_DELAY_MS)
+        postDelayed(viewportRenderAction, 16L)
     }
 
     private fun updatePreviewTransform() {
@@ -264,8 +297,88 @@ class ExcelPageHost(
         surface.pivotY = 0f
         surface.scaleX = previewScale
         surface.scaleY = previewScale
-        surface.translationX = renderedOffsetX * previewScale - offsetX
-        surface.translationY = renderedOffsetY * previewScale - offsetY
+        surface.translationX = (renderedOffsetX * previewScale - offsetX).toFloat()
+        surface.translationY = (renderedOffsetY * previewScale - offsetY).toFloat()
+        updateSelectionHandles()
+    }
+
+    private fun updateSelectionHandles() {
+        if (isDraggingHandle) return // Don't let native snapping fight with current drag
+
+        val limits = renderer.getSelectionLimits()
+        val box = limits?.getBox()
+        if (limits == null || box == null || !limits.getIsActive()) {
+            handles.forEach { it.visibility = GONE }
+            return
+        }
+
+        val factor = currentScale.toFloat()
+        val left = (box.left * factor - offsetX).toFloat()
+        val top = (box.top * factor - offsetY).toFloat()
+        val right = (box.right * factor - offsetX).toFloat()
+        val bottom = (box.bottom * factor - offsetY).toFloat()
+
+        positionHandle(handles[0], left, top)
+        positionHandle(handles[1], right, bottom)
+    }
+
+    private fun positionHandle(handle: View, x: Float, y: Float) {
+        val size = (24 * resources.displayMetrics.density)
+        handle.translationX = x - size / 2f
+        handle.translationY = y - size / 2f
+        handle.visibility = VISIBLE
+    }
+
+    private inner class SelectionHandle(context: Context, val kind: Int) : View(context) {
+        init {
+            val size = (24 * resources.displayMetrics.density).toInt()
+            layoutParams = LayoutParams(size, size)
+            val drawable = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(0xFF2196F3.toInt())
+                setStroke((2 * resources.displayMetrics.density).toInt(), Color.WHITE)
+            }
+            background = drawable
+            visibility = GONE
+        }
+
+        private var lastRawX = 0f
+        private var lastRawY = 0f
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    lastRawX = event.rawX
+                    lastRawY = event.rawY
+                    isDraggingHandle = true
+                    parent.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val dx = event.rawX - lastRawX
+                    val dy = event.rawY - lastRawY
+                    
+                    translationX += dx
+                    translationY += dy
+                    
+                    // Use handle's own size for center calculation
+                    val size = (24 * resources.displayMetrics.density)
+                    val centerX = translationX + size / 2f
+                    val centerY = translationY + size / 2f
+                    
+                    extendSelectionTo(centerX, centerY, kind)
+                    
+                    lastRawX = event.rawX
+                    lastRawY = event.rawY
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    isDraggingHandle = false
+                    parent.requestDisallowInterceptTouchEvent(false)
+                    renderViewport()
+                }
+            }
+            return true
+        }
     }
 
     private fun show(value: SOBitmap) {
@@ -293,9 +406,8 @@ class ExcelPageHost(
     }
 
     companion object {
-        private const val VIEWPORT_RENDER_DELAY_MS = 60L
         private const val DEFAULT_SCALE = 1.2
-        private const val MIN_SCALE = 0.5
+        private const val MIN_SCALE = 0.1
         private const val MAX_SCALE = 8.0
     }
 }

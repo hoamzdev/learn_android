@@ -3,6 +3,7 @@ package com.hwa.excelllll.editor
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.graphics.Point
+import android.graphics.PointF
 import android.os.Handler
 import android.os.Looper
 import com.hwa.excelllll.core.InterfaceC1335o
@@ -11,6 +12,7 @@ import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.SOPageListener
 import com.hwa.excelllll.SORender
 import com.hwa.excelllll.SOPage
+import com.hwa.excelllll.SOSelectionLimits
 import androidx.core.graphics.createBitmap
 
 /**
@@ -31,40 +33,62 @@ class ExcelRenderController(
     private var displayedBufferIndex = -1
     private var bufferWidth = 0
     private var bufferHeight = 0
-    private var selectedPageX: Double? = null
-    private var selectedPageY: Double? = null
+    
+    private var selectionStart: PointF? = null
+    private var selectionEnd: PointF? = null
 
     /** Selects a cell on the page currently held by the renderer. */
     fun selectCell(pageX: Double, pageY: Double): Boolean {
         val page = cachedPage ?: return false
         document.clearSelection()
         page.select(3, pageX, pageY)
-        selectedPageX = pageX
-        selectedPageY = pageY
+        val point = PointF(pageX.toFloat(), pageY.toFloat())
+        selectionStart = point
+        selectionEnd = point
         return true
     }
 
-    /** Commits the native cell edit buffer while keeping the same cell selected. */
+    /** Extends current selection to the specified point using the given mode. */
+    fun extendSelection(pageX: Double, pageY: Double, mode: Int = 2): Boolean {
+        val page = cachedPage ?: return false
+        page.select(mode, pageX, pageY)
+        
+        val point = PointF(pageX.toFloat(), pageY.toFloat())
+        if (mode == 0) {
+            selectionStart = point
+        } else {
+            selectionEnd = point
+        }
+        return true
+    }
+
+    fun getSelectionLimits(): SOSelectionLimits? = cachedPage?.selectionLimits()
+
+    /** Commits the native cell edit buffer while keeping the same selection. */
     fun commitAndReselectCell(onComplete: () -> Unit): Boolean {
         val page = cachedPage ?: return false
-        val pageX = selectedPageX ?: return false
-        val pageY = selectedPageY ?: return false
+        val start = selectionStart ?: return false
+        val end = selectionEnd
 
-        // libso commits spreadsheet text only when selection enters another
-        // cell. clearSelection() alone is not enough, so briefly select a
-        // point just outside the current cell and then restore it.
-        val box = runCatching { page.selectionLimits()?.getBox() }.getOrNull()
-            ?: return false
-        val temporaryX = if (box.right > box.left) box.right + 1.0 else pageX + 1.0
-        val temporaryY = if (box.bottom > box.top) {
-            ((box.top + box.bottom) / 2f).toDouble()
-        } else {
-            pageY
-        }
+        // Force commit by selecting a point definitely outside the current cell
+        val limits = page.selectionLimits()
+        val box = limits?.getBox()
+        val temporaryX = if (box != null && box.right > box.left) box.right.toDouble() + 10.0 else start.x.toDouble() + 10.0
+        val temporaryY = start.y.toDouble()
+        
         page.select(3, temporaryX, temporaryY)
+        
         mainHandler.postDelayed({
             if (page !== cachedPage) return@postDelayed
-            page.select(3, pageX, pageY)
+            
+            if (end != null) {
+                // Restore range using mode 0 (Start) and 1 (End)
+                page.select(0, start.x.toDouble(), start.y.toDouble())
+                page.select(1, end.x.toDouble(), end.y.toDouble())
+            } else {
+                // Restore single cell using mode 3 (Caret)
+                page.select(3, start.x.toDouble(), start.y.toDouble())
+            }
             onComplete()
         }, CELL_COMMIT_DELAY_MS)
         return true
@@ -75,8 +99,8 @@ class ExcelRenderController(
         cachedPage?.let { runCatching { it.discard() } }
         cachedPage = null
         cachedPageIndex = -1
-        selectedPageX = null
-        selectedPageY = null
+        selectionStart = null
+        selectionEnd = null
     }
 
     fun render(
@@ -118,9 +142,6 @@ class ExcelRenderController(
             }
         }
         if (page == null) {
-            // Artifex can emit onLayoutCompleted just before the first page is
-            // exposed by getPage(). Treat that as a short-lived loading state,
-            // not as a render failure.
             if (attempt < MAX_PAGE_READY_ATTEMPTS) {
                 mainHandler.postDelayed(
                     {
@@ -141,9 +162,6 @@ class ExcelRenderController(
             return
         }
 
-        // libso's original rendering pipeline uses RGB_565 render buffers.
-        // Supplying ARGB_8888 can produce wrong stride/colour interpretation
-        // with older Artifex binaries (faded lines and duplicated pixels).
         val bitmapWidth = request.width.coerceAtLeast(1)
         val bitmapHeight = request.height.coerceAtLeast(1)
         if (bitmapWidth != bufferWidth || bitmapHeight != bufferHeight) {
@@ -156,13 +174,8 @@ class ExcelRenderController(
         val soBitmap = renderBuffers[bufferIndex] ?: bitmapProvider.create(
             createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565)
         ).also { renderBuffers[bufferIndex] = it }
-        val bitmap = soBitmap.bitmap().apply {
-            eraseColor(android.graphics.Color.WHITE)
-        }
-        // Use a document-independent base zoom. Fitting the whole sheet to the
-        // viewport makes large sheets start with much smaller text than small
-        // sheets. A fixed base keeps the initial cell/text size consistent;
-        // page dimensions only determine how far the viewport can scroll.
+        soBitmap.bitmap().eraseColor(android.graphics.Color.WHITE)
+        
         val renderZoom = (BASE_DOCUMENT_ZOOM * request.scale).takeIf {
             it.isFinite() && it > 0.0
         } ?: request.scale.coerceAtLeast(1.0)
@@ -174,9 +187,6 @@ class ExcelRenderController(
             android.graphics.PointF(-request.offsetX.toFloat(), -request.offsetY.toFloat()),
             soBitmap,
             InterfaceC1335o { code ->
-                // abort()/destroy() cannot remove a callback that libso has
-                // already queued on the main thread. Never let an old zoom or
-                // viewport replace the latest rendered bitmap.
                 if (generation != renderGeneration || frameDelivered) {
                     return@InterfaceC1335o
                 }

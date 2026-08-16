@@ -1,6 +1,7 @@
 package com.hwa.excelllll.ui.editor
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
@@ -42,6 +43,7 @@ class ExcelViewerView @JvmOverloads constructor(
     private val progress = ProgressBar(context).apply {
         visibility = GONE
         isIndeterminate = true
+        indeterminateTintList = ColorStateList.valueOf(Color.GREEN)
     }
     private val message = TextView(context).apply {
         gravity = Gravity.CENTER
@@ -221,8 +223,12 @@ class ExcelViewerView @JvmOverloads constructor(
         message.visibility = GONE
     }
 
-    /** Returns the text of the currently selected cell/range. */
-    fun selectedText(): String = editor?.selection?.text().orEmpty()
+    /** Returns the text of the currently selected cell. Returns empty if a range is selected. */
+    fun selectedText(): String {
+        val state = selectedCell() ?: return ""
+        if (state.rowCount > 1 || state.columnCount > 1) return ""
+        return state.text
+    }
 
     /** Returns a snapshot; edits still act on the native selection kept by this view. */
     fun selectedCell(): ExcelSelectionState? {
@@ -305,10 +311,20 @@ class ExcelViewerView @JvmOverloads constructor(
     }
 
     /** Restores the document state before the most recent edit. */
-    fun undo(): Boolean = moveEditHistory(-1)
+    fun undo(): Boolean {
+        if(canUndo()){
+            return moveEditHistory(-1)
+        }
+        return false
+    }
 
     /** Reapplies the next edit that was previously undone. */
-    fun redo(): Boolean = moveEditHistory(1)
+    fun redo(): Boolean{
+        if(canRedo()){
+            return moveEditHistory(1)
+        }
+        return false
+    }
 
     fun sheetCount(): Int = documentManager.current()?.sheetCount() ?: 0
 

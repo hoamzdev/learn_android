@@ -8,6 +8,7 @@ import com.example.testBaseApp.databinding.ActivityMain6Binding
 import com.example.testBaseApp.ui.adapter.PickColorAdapter
 import com.example.testBaseApp.ui.adapter.TabSheetAdapter
 import com.example.testBaseApp.utils.FileUtils
+import com.example.testBaseApp.utils.invisible
 import com.example.testBaseApp.utils.visible
 import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.ui.editor.ExcelSelectionState
@@ -72,7 +73,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
         val sheets = document.sheetNames()
 //        log("Sheets (${sheets.size}): $sheets")
         sheets.forEach { log(it) }
-        if (sheets.size <= 1) {
+        if (sheets.size > 1) {
             viewBinding.rcTabs.visible()
         }
         viewBinding.rcTabs.adapter = tabAdapter
