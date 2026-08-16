@@ -142,6 +142,23 @@ class ExcelViewerView @JvmOverloads constructor(
         }
     }
 
+    /** Binds an existing document to this view. Useful for configuration changes. */
+    fun bindExistingDocument(document: SODoc, sheetIndex: Int = 0) {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val generation = requestGeneration.incrementAndGet()
+        pageHost?.close()
+        pageHost?.let(::removeView)
+        
+        documentManager.bind(document)
+        currentSheetIndex = sheetIndex
+        showDocument(document, generation)
+        
+        // Ensure the correct sheet is rendered
+        if (sheetIndex > 0) {
+            post { showSheet(sheetIndex) }
+        }
+    }
+
     /** Renders the Excel sheet at [index]. Sheet indexes start at 0. */
     fun showSheet(index: Int, onComplete: (Int) -> Unit = {}) {
         check(!released) { "ExcelViewerView has already been closed" }
@@ -454,8 +471,11 @@ class ExcelViewerView @JvmOverloads constructor(
         requestGeneration.incrementAndGet()
         pageHost?.close()
         pageHost = null
+        worker.execute {
+            documentManager.close()
+            editor?.close()
+        }
         editor = null
-        worker.execute { documentManager.close() }
         worker.shutdown()
     }
 

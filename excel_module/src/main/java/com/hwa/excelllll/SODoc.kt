@@ -3,13 +3,14 @@ package com.hwa.excelllll
 import android.content.Context
 import android.graphics.PointF
 import android.graphics.RectF
-
+import androidx.annotation.Keep
 /**
  * JNI-backed document object.
  *
  * Only the native boundary is kept here. Application/UI code should use the
  * readable methods below instead of decompiled m56xx names.
  */
+@Keep
 open class SODoc(
     @JvmField protected var internal: Long
 ) {

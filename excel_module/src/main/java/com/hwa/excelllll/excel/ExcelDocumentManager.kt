@@ -47,15 +47,19 @@ class ExcelDocumentManager(
 
     fun current(): SODoc? = document
 
+    /** Attaches an existing document instance. Does not close existing document. */
+    fun bind(doc: SODoc) {
+        document = doc
+        state = ExcelDocumentState.Loaded(doc)
+    }
+
     fun close() {
         closeInternal()
         state = ExcelDocumentState.Closed
     }
 
     private fun closeInternal() {
-        document?.let {
-            runCatching { it.close() }
-        }
+        // Không gọi it.close() ở đây nữa vì ViewModel sẽ quản lý việc này
         document = null
 
         cachedPath?.let(ExcelFileAccess::deleteCachedFile)
