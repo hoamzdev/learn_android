@@ -355,9 +355,28 @@ class ExcelViewerView @JvmOverloads constructor(
         return true
     }
 
-    /** Re-renders the displayed sheet after a successful edit. */
+    /** Re-renders the displayed sheet after a successful edit, preserving current scale and scroll position. */
     fun refresh(onComplete: (Int) -> Unit = {}) {
-        showSheet(currentSheetIndex, onComplete)
+        check(!released) { "ExcelViewerView has already been closed" }
+        if (!isMainThread()) {
+            post { refresh(onComplete) }
+            return
+        }
+
+        val host = pageHost
+        if (host == null || host.width <= 0 || host.height <= 0) {
+            onComplete(SHEET_NOT_READY)
+            return
+        }
+
+        host.refresh { status ->
+            if (status == 0) {
+                hideLoading()
+            } else {
+                showError("Không refresh được sheet $currentSheetIndex (mã lỗi: $status)")
+            }
+            onComplete(status)
+        }
     }
 
     private fun edit(action: (ExcelEditorController) -> Unit): Boolean =

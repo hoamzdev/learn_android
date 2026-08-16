@@ -1,16 +1,8 @@
 package com.example.testBaseApp.ui.main
 
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.graphics.Color
-import android.net.Uri
-import android.provider.OpenableColumns
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import com.example.testBaseApp.R
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain6Binding
 import com.example.testBaseApp.ui.adapter.PickColorAdapter

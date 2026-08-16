@@ -2,17 +2,14 @@ package com.hwa.excelllll
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import androidx.core.graphics.createBitmap
 
 open class SOBitmap(
     private val bitmap: Bitmap,
     private val rect: Rect = Rect(0, 0, bitmap.width, bitmap.height)
 ) {
     constructor(width: Int, height: Int) : this(
-        Bitmap.createBitmap(
-            width.coerceAtLeast(1),
-            height.coerceAtLeast(1),
-            Bitmap.Config.RGB_565
-        )
+        createBitmap(width.coerceAtLeast(1), height.coerceAtLeast(1), Bitmap.Config.RGB_565)
     )
 
     constructor() : this(1, 1)

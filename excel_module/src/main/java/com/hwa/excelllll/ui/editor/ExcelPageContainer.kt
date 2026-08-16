@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.view.ViewGroup
 import com.hwa.excelllll.SOBitmap
 import com.hwa.excelllll.SODoc
-import com.hwa.excelllll.ui.editor.DocPageView
 
 /**
  * Minimal page container for an Excel document.
