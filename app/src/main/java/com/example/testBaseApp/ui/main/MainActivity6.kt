@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testBaseApp.R
 import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain6Binding
+import com.example.testBaseApp.ui.adapter.PickColorAdapter
 import com.example.testBaseApp.ui.adapter.TabSheetAdapter
 import com.example.testBaseApp.utils.FileUtils
 import com.example.testBaseApp.utils.visible
@@ -28,6 +29,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
     private lateinit var document: SODoc
     private lateinit var excelSelectionState: ExcelSelectionState
     private val tabAdapter: TabSheetAdapter by lazy { TabSheetAdapter() }
+    private val pickColorAdapter : PickColorAdapter by lazy { PickColorAdapter() }
 
     override val belowStatusBar: Boolean
         get() = false

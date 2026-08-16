@@ -28,4 +28,8 @@
         <attr name="timerMaxDurationMs" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="EditBtn">
+        <attr name="ImageEdt" format="reference" />
+    </declare-styleable>
+
 </resources>

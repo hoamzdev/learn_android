@@ -290,6 +290,26 @@ class ExcelViewerView @JvmOverloads constructor(
     fun setColumnWidthCell(width: Float): Boolean = edit { it.setColumnWidth(width) }
     fun setRowHeightCell(height: Float): Boolean = edit { it.setRowHeight(height) }
 
+    /** Returns whether the native document has an earlier edit to restore. */
+    fun canUndo(): Boolean {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val document = documentManager.current() ?: return false
+        return document.getCurrentEdit() > 0
+    }
+
+    /** Returns whether the native document has a later edit to restore. */
+    fun canRedo(): Boolean {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val document = documentManager.current() ?: return false
+        return document.getCurrentEdit() < document.getNumEdits()
+    }
+
+    /** Restores the document state before the most recent edit. */
+    fun undo(): Boolean = moveEditHistory(-1)
+
+    /** Reapplies the next edit that was previously undone. */
+    fun redo(): Boolean = moveEditHistory(1)
+
     fun sheetCount(): Int = documentManager.current()?.sheetCount() ?: 0
 
     fun sheetNames(): List<String> = documentManager.current()?.sheetNames().orEmpty()
@@ -342,6 +362,19 @@ class ExcelViewerView @JvmOverloads constructor(
 
     private fun edit(action: (ExcelEditorController) -> Unit): Boolean =
         editIf(allowed = { true }, action = action)
+
+    private fun moveEditHistory(offset: Int): Boolean {
+        check(!released) { "ExcelViewerView has already been closed" }
+        val document = documentManager.current() ?: return false
+        val targetEdit = document.getCurrentEdit() + offset
+        if (targetEdit !in 0..document.getNumEdits()) return false
+
+        document.setCurrentEdit(targetEdit)
+        refresh {
+            dispatchSelectionChanged()
+        }
+        return true
+    }
 
     private fun editIf(
         allowed: (ExcelEditorController) -> Boolean,

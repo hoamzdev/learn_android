@@ -1,0 +1,36 @@
+package com.example.testBaseApp.ui.main
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+
+@HiltViewModel
+class MainViewModel @Inject constructor() : ViewModel() {
+    private val _listColorBackGround = MutableLiveData<List<String>>()
+    val listColorBackGround : LiveData<List<String>>
+        get() = _listColorBackGround
+
+    init {
+        setupColorBackgroundForEdit()
+    }
+
+    private fun setupColorBackgroundForEdit() {
+        val colors = listOf(
+            "#FF6B6B", // Coral
+            "#4D96FF", // Blue
+            "#6BCB77", // Green
+            "#FFD93D", // Yellow
+            "#845EC2", // Purple
+            "#FF9671", // Orange
+            "#00C9A7", // Teal
+            "#C34A36", // Red Brown
+            "#0081CF", // Deep Blue
+            "#F9F871"  // Soft Yellow
+        )
+        _listColorBackGround.postValue(colors)
+    }
+
+}
