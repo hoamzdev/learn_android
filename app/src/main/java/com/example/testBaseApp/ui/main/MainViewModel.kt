@@ -1,7 +1,5 @@
 package com.example.testBaseApp.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.ui.editor.ExcelSelectionState
@@ -9,11 +7,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
+enum class EditType{
+    BOLD,
+    ITALIC,
+    UNDERLINE,
+    STRIKETHROUGH,
+}
+
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
-    private val _listColorBackGround = MutableLiveData<List<String>>()
-    val listColorBackGround : LiveData<List<String>>
-        get() = _listColorBackGround
+class MainViewModel @Inject constructor(
+) : ViewModel() {
+    var listColorBackGround = emptyList<String>()
+
+    var toggleEditing : MutableMap<EditType, Boolean> = mutableMapOf()
 
     init {
         setupColorBackgroundForEdit()
@@ -32,7 +38,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
             "#0081CF", // Deep Blue
             "#F9F871"  // Soft Yellow
         )
-        _listColorBackGround.postValue(colors)
+        listColorBackGround = colors
     }
 
     var document: SODoc? = null
@@ -40,5 +46,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
     var selectionState: ExcelSelectionState? = null
 
     var currentSheetIndex: Int = 0
+
+    fun toggleModeEditType(editType: EditType){
+        toggleEditing[editType]?.let { toggleEditing[editType] = !it }
+    }
 
 }

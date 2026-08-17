@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger
 data class ExcelSelectionState(
     val sheetIndex: Int,
     val text: String,
+    val fontSize: Double,
     val firstRow: Int?,
     val firstColumn: Int?,
     val rowCount: Int,
@@ -31,6 +32,10 @@ data class ExcelSelectionState(
     val canEditText: Boolean,
     val canCopy: Boolean,
     val canDelete: Boolean,
+    val isBold : Boolean,
+    val isItalic : Boolean,
+    val underLine : Boolean,
+    val isStrikeThrough : Boolean,
     val canPaste: Boolean
 )
 
@@ -254,6 +259,7 @@ class ExcelViewerView @JvmOverloads constructor(
         return ExcelSelectionState(
             sheetIndex = currentSheetIndex,
             text = model.text().orEmpty(),
+            fontSize = model.getFontSize(),
             firstRow = range?.let { runCatching { it.firstRow() }.getOrNull() },
             firstColumn = range?.let { runCatching { it.firstColumn() }.getOrNull() },
             rowCount = range?.let { runCatching { it.rowCount() }.getOrDefault(1) } ?: 1,
@@ -261,7 +267,11 @@ class ExcelViewerView @JvmOverloads constructor(
             canEditText = model.canEditText(),
             canCopy = model.canCopy(),
             canDelete = model.canDelete(),
-            canPaste = model.canPaste()
+            canPaste = model.canPaste(),
+            isBold = model.isBold(),
+            isItalic = model.isItalic(),
+            underLine = model.isUnderline(),
+            isStrikeThrough = model.isStrikeThrough()
         )
     }
 
@@ -282,18 +292,29 @@ class ExcelViewerView @JvmOverloads constructor(
 
     fun copy(): Boolean {
         val controller = editor ?: return false
+        val state = selectedCell() ?: return false
+        // Chỉ cho phép copy khi chọn đúng 1 ô
+        if (state.rowCount != 1 || state.columnCount != 1) return false
         if (!controller.selection.canCopy()) return false
         controller.copy()
         return true
     }
 
     fun cut(): Boolean = editIf(
-        allowed = { it.selection.canCopy() && it.selection.canDelete() },
+        allowed = { 
+            val state = selectedCell() ?: return@editIf false
+            // Chỉ cho phép cut khi chọn đúng 1 ô
+            state.rowCount == 1 && state.columnCount == 1 && it.selection.canCopy() && it.selection.canDelete() 
+        },
         action = { it.cut() }
     )
 
     fun paste(): Boolean = editIf(
-        allowed = { it.selection.canPaste() },
+        allowed = { 
+            val state = selectedCell() ?: return@editIf false
+            // Chỉ cho phép paste khi chọn đúng 1 ô
+            state.rowCount == 1 && state.columnCount == 1 && it.selection.canPaste() 
+        },
         action = { it.paste() }
     )
 
@@ -386,6 +407,30 @@ class ExcelViewerView @JvmOverloads constructor(
             if (status == 0) onSheetListChanged?.invoke(sheetNames())
         }
         return true
+    }
+
+    /**
+     * Commits any pending cell edits (like typed text) to the native document.
+     * This is asynchronous.
+     */
+    fun commitCurrentEdit(onComplete: () -> Unit) {
+        if (released) {
+            onComplete()
+            return
+        }
+        val host = pageHost
+        if (host == null) {
+            onComplete()
+            return
+        }
+        
+        val commitStarted = host.commitAndReselectCell {
+            onComplete()
+        }
+        
+        if (!commitStarted) {
+            onComplete()
+        }
     }
 
     /** Re-renders the displayed sheet after a successful edit, preserving current scale and scroll position. */

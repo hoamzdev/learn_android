@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="full_screen_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+    </style>
+
     <style name="TextView.TeLex.regular" parent="">
         <item name="fontFamily">@font/nexapro_trial_regular</item>
         <item name="android:fontFamily">@font/nexapro_trial_regular</item>

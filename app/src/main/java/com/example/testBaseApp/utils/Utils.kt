@@ -54,12 +54,12 @@ object Utils {
         }
 
         val intents = listOf(
-            android.content.Intent("android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION")
+            Intent("android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION")
                 .apply {
                     data = "package:${activity.packageName}".toUri()
                 },
-            android.content.Intent("android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION"),
-            android.content.Intent("android.settings.APPLICATION_DETAILS_SETTINGS").apply {
+            Intent("android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION"),
+            Intent("android.settings.APPLICATION_DETAILS_SETTINGS").apply {
                 data = "package:${activity.packageName}".toUri()
             })
 

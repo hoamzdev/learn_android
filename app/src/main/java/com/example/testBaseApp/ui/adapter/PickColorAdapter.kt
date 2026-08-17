@@ -17,7 +17,7 @@ class PickColorAdapter :
 
     private var pickColorCallBack : PickColorCallBack? = null
 
-    private fun setOnPickColorCallBack(callBack: PickColorCallBack) {
+    fun setOnPickColorCallBack(callBack: PickColorCallBack) {
         this.pickColorCallBack = callBack
     }
 
@@ -67,7 +67,7 @@ class PickColorAdapter :
         }
     }
 
-    private interface PickColorCallBack{
+    interface PickColorCallBack{
         fun onPickColor(color: String)
     }
 }

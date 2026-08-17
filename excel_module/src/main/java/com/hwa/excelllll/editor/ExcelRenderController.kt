@@ -228,6 +228,6 @@ class ExcelRenderController(
         private const val BASE_DOCUMENT_ZOOM = 1.0
         private const val MAX_PAGE_READY_ATTEMPTS = 20
         private const val PAGE_READY_RETRY_DELAY_MS = 50L
-        private const val CELL_COMMIT_DELAY_MS = 50L
+        private const val CELL_COMMIT_DELAY_MS = 10L
     }
 }

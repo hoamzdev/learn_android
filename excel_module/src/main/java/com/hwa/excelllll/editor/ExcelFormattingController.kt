@@ -17,14 +17,14 @@ class ExcelFormattingController(
     fun fontSize(size: Double) = document.setSelectionFontSize(size)
     fun fontColor(color: String) = document.setSelectionFontColor(color)
 
-    fun backgroundColor(color: String) =
+    fun fillColor(color : String) = document.setSelectionFillColor(color)
+    fun backgroundColor(color: String) {
         document.setSelectionBackgroundColor(color)
+        document.setSelectionFillColor(color)
+    }
 
     fun backgroundTransparent() =
         document.setSelectionBackgroundTransparent()
-
-    fun fillColor(color: String) =
-        document.setSelectionFillColor(color)
 
     fun alignment(value: Int) =
         document.setSelectionAlignment(value)

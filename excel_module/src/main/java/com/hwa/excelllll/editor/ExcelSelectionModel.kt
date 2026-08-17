@@ -28,6 +28,12 @@ class ExcelSelectionModel(
     fun canResize() = document.getSelectionCanBeResized()
     fun canRotate() = document.getSelectionCanBeRotated()
 
+    fun getFontSize(): Double = document.getSelectionFontSize()
+    fun isBold(): Boolean = document.getSelectionIsBold()
+    fun isItalic(): Boolean = document.getSelectionIsItalic()
+    fun isUnderline(): Boolean = document.getSelectionIsUnderlined()
+    fun isStrikeThrough(): Boolean = document.getSelectionIsLinethrough()
+
     fun setLimits(left: Float, top: Float, right: Float, bottom: Float) {
         throw UnsupportedOperationException("Selection bounds must be set through SOPage")
     }

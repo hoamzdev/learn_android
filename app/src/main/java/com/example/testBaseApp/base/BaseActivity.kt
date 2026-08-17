@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -40,6 +41,12 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
         initView()
         bindView()//setup ui
         bindViewModel()//get data from viewmodel
+
+        onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onFinish()
+            }
+        })
     }
 
     open fun initView() {}
@@ -114,6 +121,6 @@ abstract class BaseActivity<VB : ViewBinding>(inflater: (LayoutInflater) -> VB) 
     }
 
     open fun onFinish() {
-        finish()
+//        finish()
     }
 }

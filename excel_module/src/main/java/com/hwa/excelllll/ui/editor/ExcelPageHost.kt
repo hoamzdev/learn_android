@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
+import android.widget.OverScroller
 import com.hwa.excelllll.SOBitmap
 import com.hwa.excelllll.SODoc
 import com.hwa.excelllll.editor.ExcelBitmapProvider
@@ -50,12 +51,30 @@ class ExcelPageHost(
     private lateinit var handles: Array<View>
     private var isDraggingHandle = false
 
+    // Thêm Scroller để hỗ trợ cuộn theo quán tính (Fling)
+    private val scroller = OverScroller(context)
+
     /** Called after a non-dragging single tap selects a spreadsheet cell. */
     var onCellSelected: (() -> Unit)? = null
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
             selectCellAt(e.x, e.y)
+            return true
+        }
+
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            if (isDraggingHandle || scaleDetector.isInProgress) return false
+            
+            // Bắt đầu tính quán tính
+            scroller.fling(
+                offsetX.toInt(), offsetY.toInt(),
+                (-velocityX).toInt(), (-velocityY).toInt(),
+                0, (contentSize.x - width).coerceAtLeast(0),
+                0, (contentSize.y - height).coerceAtLeast(0),
+                0, 0
+            )
+            postInvalidateOnAnimation()
             return true
         }
     })
@@ -97,12 +116,22 @@ class ExcelPageHost(
         addView(
             surface,
             LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
             )
         )
         handles.forEach { addView(it) }
         isClickable = true
+    }
+
+    override fun computeScroll() {
+        if (scroller.computeScrollOffset()) {
+            offsetX = scroller.currX.toDouble()
+            offsetY = scroller.currY.toDouble()
+            updatePreviewTransform()
+            scheduleViewportRender()
+            postInvalidateOnAnimation()
+        }
     }
 
     fun render(
@@ -170,6 +199,7 @@ class ExcelPageHost(
         if (isDraggingHandle) return true
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                scroller.forceFinished(true)
                 lastX = event.x
                 lastY = event.y
                 dragging = false
@@ -193,6 +223,7 @@ class ExcelPageHost(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                scroller.forceFinished(true)
                 lastX = event.x
                 lastY = event.y
                 dragging = false

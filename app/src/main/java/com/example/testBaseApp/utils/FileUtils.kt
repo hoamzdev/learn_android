@@ -32,4 +32,13 @@ object FileUtils {
         }
         return fileName ?: INVALID_NAME
     }
+
+    fun getEndFileName(nameFile : String) : String{
+        val indexDotLast = nameFile.lastIndexOf('.')
+        return if (indexDotLast != -1) {
+            nameFile.substring(indexDotLast)
+        }
+        else ""
+    }
+
 }

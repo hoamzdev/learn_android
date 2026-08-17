@@ -21,6 +21,10 @@ class TabSheetAdapter :
         this.onClick = block
     }
 
+    fun setCurrentSheetClicked(position: Int) {
+        currentClicked = position
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
     ): TabViewHolder {
