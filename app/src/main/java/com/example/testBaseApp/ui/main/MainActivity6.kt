@@ -13,19 +13,17 @@ import com.example.testBaseApp.base.BaseActivity
 import com.example.testBaseApp.databinding.ActivityMain6Binding
 import com.example.testBaseApp.ui.adapter.PickColorAdapter
 import com.example.testBaseApp.ui.adapter.TabSheetAdapter
+import com.example.testBaseApp.ui.adapter.TabSheetAdapterTemp
 import com.example.testBaseApp.ui.dialog.AskSaveDialog
 import com.example.testBaseApp.utils.FileUtils
 import com.example.testBaseApp.utils.invisible
 import com.example.testBaseApp.utils.visible
 import com.hwa.excelllll.SODoc
-import com.hwa.excelllll.SODocSaveListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.coroutines.resume
 
 
 @AndroidEntryPoint
@@ -36,7 +34,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
     }
 
     private val viewModel: MainViewModel by viewModels()
-    private val tabAdapter: TabSheetAdapter by lazy { TabSheetAdapter() }
+    private val tabAdapter: TabSheetAdapterTemp by lazy { TabSheetAdapterTemp() }
     private val pickColorAdapter: PickColorAdapter by lazy { PickColorAdapter() }
     private var askSaveDialog: AskSaveDialog? = null
     private lateinit var nameFile: String
@@ -94,6 +92,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
                 handleSetUpEditBg(viewBinding.bottomEdit.btnTextItalic, selected.isItalic)
                 handleSetUpEditBg(viewBinding.bottomEdit.btnTextUnder, selected.underLine)
                 handleSetUpEditBg(viewBinding.bottomEdit.btnStriketrough, selected.isStrikeThrough)
+                handleEnableDisableEditFontSize(selected.fontSize)
             }
         }
     }
@@ -119,6 +118,8 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
         pickColorAdapter.setOnPickColorCallBack(object : PickColorAdapter.PickColorCallBack {
             override fun onPickColor(color: String) {
                 viewBinding.viewExcel.setFontColorCell(color)
+                isShowPickColorTab = !isShowPickColorTab
+                viewBinding.bottomEdit.textColorRecyclerView.visibility = View.GONE
             }
         })
         
@@ -158,7 +159,6 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
         val current = viewModel.selectionState?.isStrikeThrough ?: false
         val newState = !current
         viewBinding.viewExcel.setStrikeThroughCell(newState)
-        // ViewModel state sẽ được cập nhật lại qua callback onCellSelected sau khi edit xong
     }
     fun setTextUnder() {
         val current = viewModel.selectionState?.underLine ?: false
@@ -237,6 +237,33 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
             askSaveDialog?.show()
         } else {
             finish()
+        }
+    }
+
+    private fun handleEnableDisableEditFontSize(fontSize : Double){
+        if(fontSize > 6 && fontSize < 20){
+            viewBinding.bottomEdit.apply {
+                btnTextSizeDown.apply {
+                    isEnabled = true
+                    alpha = 1f
+                }
+                btnTextSizeUp.apply {
+                    isEnabled = true
+                    alpha = 1f
+                }
+            }
+        }
+        else if(fontSize < 6){
+            viewBinding.bottomEdit.btnTextSizeDown.apply {
+                isEnabled = false
+                alpha = 0.4f
+            }
+        }
+        else if(fontSize > 20){
+            viewBinding.bottomEdit.btnTextSizeUp.apply {
+                isEnabled = false
+                alpha = 0.4f
+            }
         }
     }
 

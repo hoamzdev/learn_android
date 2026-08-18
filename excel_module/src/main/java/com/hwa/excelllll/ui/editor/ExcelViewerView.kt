@@ -29,6 +29,7 @@ data class ExcelSelectionState(
     val firstColumn: Int?,
     val rowCount: Int,
     val columnCount: Int,
+    val isMerged: Boolean,
     val canEditText: Boolean,
     val canCopy: Boolean,
     val canDelete: Boolean,
@@ -264,6 +265,7 @@ class ExcelViewerView @JvmOverloads constructor(
             firstColumn = range?.let { runCatching { it.firstColumn() }.getOrNull() },
             rowCount = range?.let { runCatching { it.rowCount() }.getOrDefault(1) } ?: 1,
             columnCount = range?.let { runCatching { it.columnCount() }.getOrDefault(1) } ?: 1,
+            isMerged = model.isMerged(),
             canEditText = model.canEditText(),
             canCopy = model.canCopy(),
             canDelete = model.canDelete(),
@@ -293,29 +295,58 @@ class ExcelViewerView @JvmOverloads constructor(
     fun copy(): Boolean {
         val controller = editor ?: return false
         val state = selectedCell() ?: return false
-        // Chỉ cho phép copy khi chọn đúng 1 ô
-        if (state.rowCount != 1 || state.columnCount != 1) return false
+        val isSingleUnit = (state.rowCount == 1 && state.columnCount == 1) || state.isMerged
+        if (!isSingleUnit) return false
         if (!controller.selection.canCopy()) return false
-        controller.copy()
-        return true
+        val cleanText = controller.clipboard.getCleanSelectionText()
+        if (cleanText.isNotEmpty()) {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("Excel", cleanText)
+            clipboard.setPrimaryClip(clip)
+            return true
+        }
+        return false
     }
 
     fun cut(): Boolean = editIf(
         allowed = { 
             val state = selectedCell() ?: return@editIf false
-            // Chỉ cho phép cut khi chọn đúng 1 ô
-            state.rowCount == 1 && state.columnCount == 1 && it.selection.canCopy() && it.selection.canDelete() 
+            val isSingleUnit = (state.rowCount == 1 && state.columnCount == 1) || state.isMerged
+            isSingleUnit && it.selection.canCopy() && it.selection.canDelete() 
         },
-        action = { it.cut() }
+        action = { controller ->
+            // Lấy text sạch của ô (xử lý tốt cho cả ô gộp)
+            val cleanText = controller.clipboard.getCleanSelectionText()
+            if (cleanText.isNotEmpty()) {
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = android.content.ClipData.newPlainText("Excel", cleanText)
+                clipboard.setPrimaryClip(clip)
+            }
+            // Xóa nội dung ô
+            controller.deleteSelection()
+        }
     )
 
     fun paste(): Boolean = editIf(
         allowed = { 
             val state = selectedCell() ?: return@editIf false
-            // Chỉ cho phép paste khi chọn đúng 1 ô
-            state.rowCount == 1 && state.columnCount == 1 && it.selection.canPaste() 
+            val isSingleUnit = (state.rowCount == 1 && state.columnCount == 1) || state.isMerged
+            isSingleUnit && it.selection.canPaste()
         },
-        action = { it.paste() }
+        action = { controller ->
+            // Ưu tiên lấy dữ liệu từ clipboard hệ thống để đồng bộ với hàm cut() đã sửa
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clipData = clipboard.primaryClip
+            if (clipData != null && clipData.itemCount > 0) {
+                val text = clipData.getItemAt(0).text?.toString()
+                if (!text.isNullOrEmpty()) {
+                    controller.replaceSelection(text)
+                    return@editIf
+                }
+            }
+            // Nếu clipboard hệ thống trống, dùng lệnh paste mặc định của native
+            controller.paste()
+        }
     )
 
     fun setBoldCell(enabled: Boolean): Boolean = edit { it.setBold(enabled) }
@@ -479,20 +510,22 @@ class ExcelViewerView @JvmOverloads constructor(
     ): Boolean {
         check(!released) { "ExcelViewerView has already been closed" }
         val controller = editor ?: return false
+        
         if (!allowed(controller)) return false
+
+        // 1. Thực hiện lệnh Edit ngay lập tức
         action(controller)
 
-        // libso keeps cell mutations in an edit buffer until selection moves
-        // to another cell. Apply the same commit flow to every edit command,
-        // not only text replacement, and render only after it has completed.
-        val commitStarted = pageHost?.commitAndReselectCell {
-            refresh()
-            dispatchSelectionChanged()
-        } == true
-        if (!commitStarted) {
-            refresh()
-            dispatchSelectionChanged()
+        // 2. Ép Native commit dữ liệu ô
+        pageHost?.commitAndReselectCell {
+            // 3. Quan trọng: Đợi một nhịp ngắn (60ms) để Native cập nhật Display Tree 
+            // trước khi thực hiện Refresh màn hình. Việc này sửa lỗi "nhấn 2 lần mới hiện".
+            postDelayed({
+                refresh()
+                dispatchSelectionChanged()
+            }, 60L)
         }
+        
         return true
     }
 

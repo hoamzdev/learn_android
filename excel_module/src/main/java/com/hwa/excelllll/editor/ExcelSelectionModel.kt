@@ -34,6 +34,8 @@ class ExcelSelectionModel(
     fun isUnderline(): Boolean = document.getSelectionIsUnderlined()
     fun isStrikeThrough(): Boolean = document.getSelectionIsLinethrough()
 
+    fun isMerged(): Boolean = document.getTableCellsMerged()
+
     fun setLimits(left: Float, top: Float, right: Float, bottom: Float) {
         throw UnsupportedOperationException("Selection bounds must be set through SOPage")
     }

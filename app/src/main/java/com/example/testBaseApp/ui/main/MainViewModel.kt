@@ -7,19 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
-enum class EditType{
-    BOLD,
-    ITALIC,
-    UNDERLINE,
-    STRIKETHROUGH,
-}
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
 ) : ViewModel() {
     var listColorBackGround = emptyList<String>()
-
-    var toggleEditing : MutableMap<EditType, Boolean> = mutableMapOf()
 
     init {
         setupColorBackgroundForEdit()
@@ -36,7 +27,8 @@ class MainViewModel @Inject constructor(
             "#00C9A7", // Teal
             "#C34A36", // Red Brown
             "#0081CF", // Deep Blue
-            "#F9F871"  // Soft Yellow
+            "#F9F871",  // Soft Yellow
+            "#FFFFFF"
         )
         listColorBackGround = colors
     }
@@ -46,9 +38,4 @@ class MainViewModel @Inject constructor(
     var selectionState: ExcelSelectionState? = null
 
     var currentSheetIndex: Int = 0
-
-    fun toggleModeEditType(editType: EditType){
-        toggleEditing[editType]?.let { toggleEditing[editType] = !it }
-    }
-
 }

@@ -430,6 +430,7 @@ class ExcelPageHost(
     fun commitAndReselectCell(onComplete: () -> Unit): Boolean =
         renderer.commitAndReselectCell(onComplete)
 
+
     fun close() {
         removeCallbacks(viewportRenderAction)
         renderer.close()

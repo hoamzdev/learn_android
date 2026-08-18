@@ -17,8 +17,6 @@ import androidx.core.graphics.createBitmap
 
 /**
  * Coordinates a single native page render.
- *
- * This class does not own document opening. SODoc must already be valid.
  */
 class ExcelRenderController(
     private val document: SODoc,
@@ -36,61 +34,85 @@ class ExcelRenderController(
     
     private var selectionStart: PointF? = null
     private var selectionEnd: PointF? = null
+    
+    private var lastStableLimits: SOSelectionLimits? = null
+    private var isCommitInProgress = false
 
-    /** Selects a cell on the page currently held by the renderer. */
+    /** Selects a cell and locks its coordinates to prevent neighbor editing. */
     fun selectCell(pageX: Double, pageY: Double): Boolean {
+        if (isCommitInProgress) return false
         val page = cachedPage ?: return false
+        
         document.clearSelection()
         page.select(3, pageX, pageY)
-        val point = PointF(pageX.toFloat(), pageY.toFloat())
-        selectionStart = point
-        selectionEnd = point
-        return true
-    }
-
-    /** Extends current selection to the specified point using the given mode. */
-    fun extendSelection(pageX: Double, pageY: Double, mode: Int = 2): Boolean {
-        val page = cachedPage ?: return false
-        page.select(mode, pageX, pageY)
         
-        val point = PointF(pageX.toFloat(), pageY.toFloat())
-        if (mode == 0) {
-            selectionStart = point
+        val limits = page.selectionLimits()
+        val box = limits?.getBox()
+        if (limits != null && box != null && limits.getIsActive()) {
+            // Khóa vào tâm ô để tuyệt đối không chạm vào ô bên cạnh
+            val centerX = (box.left + box.right) / 2.0
+            val centerY = (box.top + box.bottom) / 2.0
+            val stablePoint = PointF(centerX.toFloat(), centerY.toFloat())
+            selectionStart = stablePoint
+            selectionEnd = stablePoint
+            lastStableLimits = limits
         } else {
+            val point = PointF(pageX.toFloat(), pageY.toFloat())
+            selectionStart = point
             selectionEnd = point
         }
         return true
     }
 
-    fun getSelectionLimits(): SOSelectionLimits? = cachedPage?.selectionLimits()
+    fun extendSelection(pageX: Double, pageY: Double, mode: Int = 2): Boolean {
+        if (isCommitInProgress) return false
+        val page = cachedPage ?: return false
+        page.select(mode, pageX, pageY)
+        
+        val limits = page.selectionLimits()
+        val box = limits?.getBox()
+        if (limits != null && box != null && limits.getIsActive()) {
+            if (mode == 0) {
+                selectionStart = PointF(box.left + 1f, box.top + 1f)
+            } else {
+                selectionEnd = PointF(box.right - 1f, box.bottom - 1f)
+            }
+            lastStableLimits = limits
+        }
+        return true
+    }
 
-    /** Commits the native cell edit buffer while keeping the same selection. */
+    fun isBusy(): Boolean = isCommitInProgress
+
+    fun getSelectionLimits(): SOSelectionLimits? {
+        if (isCommitInProgress) return lastStableLimits
+        val limits = cachedPage?.selectionLimits()
+        if (limits != null && limits.getIsActive()) {
+            lastStableLimits = limits
+        }
+        return limits
+    }
+
+    /** Commits and re-selects the LOCKED coordinates. */
     fun commitAndReselectCell(onComplete: () -> Unit): Boolean {
         val page = cachedPage ?: return false
         val start = selectionStart ?: return false
-        val end = selectionEnd
+        val end = selectionEnd ?: return false
 
-        // Force commit by selecting a point definitely outside the current cell
-        val limits = page.selectionLimits()
-        val box = limits?.getBox()
-        val temporaryX = if (box != null && box.right > box.left) box.right.toDouble() + 10.0 else start.x.toDouble() + 10.0
-        val temporaryY = start.y.toDouble()
+        isCommitInProgress = true
+
+        // Re-select lại tọa độ cũ để engine chốt dữ liệu. 
+        // Thực hiện đồng bộ (Sync) để tránh mất nhịp lệnh edit tiếp theo.
+        if (start.x != end.x || start.y != end.y) {
+            page.select(0, start.x.toDouble(), start.y.toDouble())
+            page.select(1, end.x.toDouble(), end.y.toDouble())
+        } else {
+            page.select(3, start.x.toDouble(), start.y.toDouble())
+        }
         
-        page.select(3, temporaryX, temporaryY)
-        
-        mainHandler.postDelayed({
-            if (page !== cachedPage) return@postDelayed
-            
-            if (end != null) {
-                // Restore range using mode 0 (Start) and 1 (End)
-                page.select(0, start.x.toDouble(), start.y.toDouble())
-                page.select(1, end.x.toDouble(), end.y.toDouble())
-            } else {
-                // Restore single cell using mode 3 (Caret)
-                page.select(3, start.x.toDouble(), start.y.toDouble())
-            }
-            onComplete()
-        }, CELL_COMMIT_DELAY_MS)
+        isCommitInProgress = false
+        onComplete()
+
         return true
     }
 
@@ -110,7 +132,6 @@ class ExcelRenderController(
         onComplete: (Int) -> Unit = {}
     ) {
         cancel()
-
         val generation = renderGeneration
         renderWhenPageIsReady(request, onBitmapReady, onPageSize, onComplete, generation)
     }
@@ -131,34 +152,20 @@ class ExcelRenderController(
             cachedPage?.let { runCatching { it.discard() } }
             cachedPage = null
             cachedPageIndex = -1
-            document.getPage(
-                request.pageIndex,
-                object : SOPageListener {
-                    override fun update(rect: RectF) = Unit
-                }
-            )?.also {
+            document.getPage(request.pageIndex, object : SOPageListener {
+                override fun update(rect: RectF) = Unit
+            })?.also {
                 cachedPage = it
                 cachedPageIndex = request.pageIndex
             }
         }
+        
         if (page == null) {
-            if (attempt < MAX_PAGE_READY_ATTEMPTS) {
-                mainHandler.postDelayed(
-                    {
-                        renderWhenPageIsReady(
-                            request,
-                            onBitmapReady,
-                            onPageSize,
-                            onComplete,
-                            generation,
-                            attempt + 1
-                        )
-                    },
-                    PAGE_READY_RETRY_DELAY_MS
-                )
-            } else {
-                onComplete(PAGE_UNAVAILABLE)
-            }
+            if (attempt < 20) {
+                mainHandler.postDelayed({
+                    renderWhenPageIsReady(request, onBitmapReady, onPageSize, onComplete, generation, attempt + 1)
+                }, 50L)
+            } else onComplete(-1)
             return
         }
 
@@ -176,20 +183,16 @@ class ExcelRenderController(
         ).also { renderBuffers[bufferIndex] = it }
         soBitmap.bitmap().eraseColor(android.graphics.Color.WHITE)
         
-        val renderZoom = (BASE_DOCUMENT_ZOOM * request.scale).takeIf {
-            it.isFinite() && it > 0.0
-        } ?: request.scale.coerceAtLeast(1.0)
+        val renderZoom = (1.0 * request.scale).takeIf { it.isFinite() && it > 0.0 } ?: request.scale.coerceAtLeast(1.0)
         onPageSize(page.sizeAtZoom(renderZoom))
 
         var frameDelivered = false
         activeRender = page.render(
             renderZoom,
-            android.graphics.PointF(-request.offsetX.toFloat(), -request.offsetY.toFloat()),
+            PointF(-request.offsetX.toFloat(), -request.offsetY.toFloat()),
             soBitmap,
             InterfaceC1335o { code ->
-                if (generation != renderGeneration || frameDelivered) {
-                    return@InterfaceC1335o
-                }
+                if (generation != renderGeneration || frameDelivered) return@InterfaceC1335o
                 if (code == 0) {
                     frameDelivered = true
                     displayedBufferIndex = bufferIndex
@@ -204,15 +207,8 @@ class ExcelRenderController(
         renderGeneration++
         mainHandler.removeCallbacksAndMessages(null)
         activeRender?.let {
-            try {
-                it.abort()
-            } catch (_: Throwable) {
-            }
-
-            try {
-                it.destroy()
-            } catch (_: Throwable) {
-            }
+            runCatching { it.abort() }
+            runCatching { it.destroy() }
         }
         activeRender = null
     }
@@ -222,12 +218,7 @@ class ExcelRenderController(
         renderBuffers = arrayOfNulls(2)
     }
 
-
     companion object {
-        const val PAGE_UNAVAILABLE = -1
-        private const val BASE_DOCUMENT_ZOOM = 1.0
-        private const val MAX_PAGE_READY_ATTEMPTS = 20
-        private const val PAGE_READY_RETRY_DELAY_MS = 50L
         private const val CELL_COMMIT_DELAY_MS = 10L
     }
 }
