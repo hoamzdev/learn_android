@@ -2,7 +2,7 @@ package com.hwa.excelllll.core
 
 /*
  * Compatibility aliases: JNI-backed classes must live in com.hwa.excelllll
- * because those exact class names are compiled into libso.so. Application
+ * because those exact class names are compiled into libabc.so. Application
  * code may keep its existing .core imports.
  */
 //typealias SOBitmap = com.hwa.excelllll.SOBitmap

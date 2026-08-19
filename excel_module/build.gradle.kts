@@ -21,6 +21,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    packaging {
+        jniLibs {
+            // Khi có nhiều nguồn cung cấp libc++_shared.so (ví dụ từ lib mới và lib cũ),
+            // chỉ giữ một bản duy nhất thay vì báo lỗi duplicate.
+            pickFirsts += setOf("lib/arm64-v8a/libc++_shared.so", "lib/armeabi-v7a/libc++_shared.so")
+        }
+    }
 }
 
 kotlin {

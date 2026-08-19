@@ -34,16 +34,16 @@ class ExcelPageContainer(
         return page
     }
 
-    fun renderPage(
-        index: Int,
-        bitmap: Bitmap,
-        onComplete: (Int) -> Unit = {}
-    ) {
-        val page = showPage(index, width.coerceAtLeast(1), height.coerceAtLeast(1))
-        page.render(SOBitmap(bitmap, Rect(0, 0, bitmap.width, bitmap.height))) {
-            onComplete(it)
-        }
-    }
+//    fun renderPage(
+//        index: Int,
+//        bitmap: Bitmap,
+//        onComplete: (Int) -> Unit = {}
+//    ) {
+//        val page = showPage(index, width.coerceAtLeast(1), height.coerceAtLeast(1))
+//        page.render(SOBitmap(bitmap, Rect(0, 0, bitmap.width, bitmap.height))) {
+//            onComplete(it)
+//        }
+//    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val w = MeasureSpec.getSize(widthMeasureSpec)

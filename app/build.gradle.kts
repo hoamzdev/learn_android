@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 plugins {
@@ -8,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.parcelize)
+    base
 }
 
 android {
@@ -35,12 +38,11 @@ android {
 
     }
 
-    val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
-    setProperty(
-        "archivesBaseName",
-        "DinhVanHoa${defaultConfig.versionName}_$formattedDate"
-    )
+    val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MM.dd.yyyy"))
 
+    base {
+        archivesName.set("DinhVanHoa1.0.0_$formattedDate")
+    }
 
     flavorDimensions += "default"
     productFlavors {
@@ -139,17 +141,14 @@ dependencies {
     implementation(libs.dimensplib)
 
     implementation(libs.androidx.webkit)
-    implementation("com.github.skydoves:cloudy:0.1.2")//blur for jetpack
-    implementation("jp.wasabeef:blurry:4.0.1")//chi dung cho image
-
-
-    // Navigation Component cho Kotlin
-
-    implementation("com.vladsch.flexmark:flexmark:0.64.8")
-
-    implementation("com.google.android.flexbox:flexbox:3.0.0")
-
-
-    implementation("androidx.multidex:multidex:2.0.1")
+//    implementation("com.github.skydoves:cloudy:0.1.2")//blur for jetpack
+//    implementation("jp.wasabeef:blurry:4.0.1")//chi dung cho image
+//
+//
+//    // Navigation Component cho Kotlin
+//
+//    implementation("com.vladsch.flexmark:flexmark:0.64.8")
+//
+//    implementation("com.google.android.flexbox:flexbox:3.0.0")
 
 }

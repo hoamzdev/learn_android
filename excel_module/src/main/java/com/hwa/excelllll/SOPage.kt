@@ -5,22 +5,28 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.RectF
 import com.hwa.excelllll.core.InterfaceC1335o
+import androidx.annotation.Keep
 
+@Keep
 open class SOPage(
     @JvmField protected var internal: Long
 ) {
+    /** 
+     * Signature 12 tham số chuẩn cho engine abc/v8a:
+     * layer, zoom, x, y, bitmap, bitmapWidth, overlay, left, top, right, bottom, listener
+     */
     private external fun nativeRenderAtZoom(
         layer: Int,
         zoom: Double,
         originX: Double,
         originY: Double,
         bitmap: Bitmap,
-        bitmapWidth: Int,
-        overlay: Bitmap?,
+        bitmapWidth: Int,       // Tham số thứ 6
+        overlay: Bitmap?,      // Tham số thứ 7
         left: Int,
         top: Int,
-        width: Int,
-        height: Int,
+        right: Int,
+        bottom: Int,
         listener: SORenderListenerInternal
     ): SORender?
 
@@ -43,28 +49,24 @@ open class SOPage(
         listener: InterfaceC1335o,
         dispatchOnMainThread: Boolean = true
     ): SORender? {
-        val rect = target.bounds()
-        val bitmap = target.bitmap()
-
-        require(rect.left >= 0 && rect.top >= 0)
-        require(rect.right <= bitmap.width && rect.bottom <= bitmap.height)
-
+        target.syncRect()
+        
         return nativeRenderAtZoom(
             layer,
             zoom,
             origin.x.toDouble(),
             origin.y.toDouble(),
-            bitmap,
-            bitmap.width,
-            null,
-            rect.left,
-            rect.top,
-            rect.width(),
-            rect.height(),
+            target.bitmap(),
+            target.bitmap().width, // Truyền bitmapWidth vào vị trí thứ 6
+            null,                  // Overlay = null ở vị trí thứ 7
+            target.left,
+            target.top,
+            target.right,
+            target.bottom,
             object : SORenderListenerInternal {
                 override fun progress(status: Int) {
                     if (dispatchOnMainThread) {
-                        SOLib.postToUi(Runnable { listener.onRenderComplete(status) })
+                        SOLib.postToUi { listener.onRenderComplete(status) }
                     } else {
                         listener.onRenderComplete(status)
                     }

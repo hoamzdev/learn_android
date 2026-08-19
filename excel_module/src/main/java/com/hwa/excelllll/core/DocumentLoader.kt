@@ -39,6 +39,8 @@ object DocumentLoader {
                         ready.countDown()
                     }
 
+                    override fun onPageSizeChanged() = Unit
+
                     override fun onSelectionChanged(start: Int, end: Int) = Unit
                     override fun progress(progress: Int, finished: Boolean) {
                         // Loading the file bytes is not the same as completing

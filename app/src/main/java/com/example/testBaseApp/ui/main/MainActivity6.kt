@@ -324,7 +324,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
         viewBinding.progressBar.visible()
         viewBinding.viewExcel.commitCurrentEdit {
             val tempSaveFile = File(cacheDir, "temp_pdf_${System.currentTimeMillis()}.pdf")
-            doc.savePdf(tempSaveFile.absolutePath, false) { result, extra ->
+            doc.savePdf(tempSaveFile.absolutePath, false) { result, _, ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         if (result == 0 && tempSaveFile.exists() && tempSaveFile.length() > 0) {

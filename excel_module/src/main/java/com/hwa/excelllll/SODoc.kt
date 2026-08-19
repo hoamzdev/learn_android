@@ -14,6 +14,15 @@ import androidx.annotation.Keep
 open class SODoc(
     @JvmField protected var internal: Long
 ) {
+    @Keep
+    inner class SOSelectionContext {
+        @JvmField var internal: Long = 0
+        @JvmField var start: Int = 0
+        @JvmField var end: Int = 0
+        @JvmField var length: Int = 0
+        @JvmField var text: String? = null
+    }
+
     private var searchText: String = ""
     private var searchBackwards: Boolean = false
     private var searchMatchCase: Boolean = false
@@ -73,6 +82,7 @@ open class SODoc(
     external fun getSelectionAlignment(): Int
     external fun getSelectionAlignmentV(): Int
     external fun getSelectionAsText(): String?
+    external fun getSelectionContext(): SOSelectionContext?
     external fun getSelectionCanBeCopied(): Boolean
     external fun getSelectionCanBeDeleted(): Boolean
     external fun getSelectionCanBePasteTarget(): Boolean

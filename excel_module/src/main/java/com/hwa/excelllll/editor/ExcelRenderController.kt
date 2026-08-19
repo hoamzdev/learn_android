@@ -179,9 +179,16 @@ class ExcelRenderController(
         }
         val bufferIndex = if (displayedBufferIndex == 0) 1 else 0
         val soBitmap = renderBuffers[bufferIndex] ?: bitmapProvider.create(
-            createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565)
+            createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         ).also { renderBuffers[bufferIndex] = it }
         soBitmap.bitmap().eraseColor(android.graphics.Color.WHITE)
+        
+        // Cập nhật tọa độ vùng vẽ
+        soBitmap.left = 0
+        soBitmap.top = 0
+        soBitmap.right = bitmapWidth
+        soBitmap.bottom = bitmapHeight
+        soBitmap.syncRect()
         
         val renderZoom = (1.0 * request.scale).takeIf { it.isFinite() && it > 0.0 } ?: request.scale.coerceAtLeast(1.0)
         onPageSize(page.sizeAtZoom(renderZoom))

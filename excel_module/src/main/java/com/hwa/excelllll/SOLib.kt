@@ -31,6 +31,15 @@ class SOLib private constructor() {
     private fun initialize(context: Context) {
         if (internal != 0L) return
 
+        // Đảm bảo các class JNI quan trọng được nạp vào máy ảo trước khi preInitLib()
+        try {
+            val loader = context.classLoader
+            loader.loadClass("com.hwa.excelllll.SODoc")
+            loader.loadClass("com.hwa.excelllll.SODoc\$SOSelectionContext")
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
         preInitLib()
         val locale = Locale.getDefault()
         val language = buildString {
@@ -64,7 +73,8 @@ class SOLib private constructor() {
         private var instance: SOLib? = null
 
         init {
-            System.loadLibrary("so")
+            System.loadLibrary("abc")
+            System.loadLibrary("c++_shared")
         }
 
         @JvmStatic

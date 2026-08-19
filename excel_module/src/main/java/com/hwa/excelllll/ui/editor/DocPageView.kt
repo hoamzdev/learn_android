@@ -91,6 +91,7 @@ open class DocPageView(
         page = document.getPage(index, this)
     }
 
+    @SuppressLint("CheckResult")
     fun render(source: SOBitmap, callback: InterfaceC1335o) {
         if (finished || !valid || page == null) {
             callback.onRenderComplete(0)
@@ -174,6 +175,7 @@ open class DocPageView(
         renderBitmap = null
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
