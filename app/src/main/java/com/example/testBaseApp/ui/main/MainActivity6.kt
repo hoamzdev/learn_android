@@ -117,7 +117,7 @@ class MainActivity6 : BaseActivity<ActivityMain6Binding>(ActivityMain6Binding::i
         pickColorAdapter.submitList(viewModel.listColorBackGround)
         pickColorAdapter.setOnPickColorCallBack(object : PickColorAdapter.PickColorCallBack {
             override fun onPickColor(color: String) {
-                viewBinding.viewExcel.setFontColorCell(color)
+                viewBinding.viewExcel.setBackgroundColorCell(color)
                 isShowPickColorTab = !isShowPickColorTab
                 viewBinding.bottomEdit.textColorRecyclerView.visibility = View.GONE
             }

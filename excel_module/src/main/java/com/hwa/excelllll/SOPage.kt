@@ -4,16 +4,21 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.RectF
-import com.hwa.excelllll.core.InterfaceC1335o
 import androidx.annotation.Keep
+import com.hwa.excelllll.core.InterfaceC1335o
 
 @Keep
 open class SOPage(
     @JvmField protected var internal: Long
 ) {
-    /** 
-     * Signature 12 tham số chuẩn cho engine abc/v8a:
-     * layer, zoom, x, y, bitmap, bitmapWidth, overlay, left, top, right, bottom, listener
+    /**
+     * Signature 12 tham số của native engine:
+     * layer, zoom, x, y, bitmap, bitmapWidth, overlay, left, top, [right|width], [bottom|height], listener
+     *
+     * Lưu ý ABI:
+     *   - arm64-v8a (libabc.so mới): tham số 10-11 là (right, bottom) = tọa độ tuyệt đối.
+     *   - armeabi-v7a (libabc.so cũ): tham số 10-11 là (width, height) = kích thước vùng vẽ.
+     * Hàm render() bên dưới tự động detect ABI và truyền đúng giá trị cho từng build.
      */
     private external fun nativeRenderAtZoom(
         layer: Int,
@@ -21,12 +26,12 @@ open class SOPage(
         originX: Double,
         originY: Double,
         bitmap: Bitmap,
-        bitmapWidth: Int,       // Tham số thứ 6
-        overlay: Bitmap?,      // Tham số thứ 7
+        bitmapWidth: Int,
+        overlay: Bitmap?,
         left: Int,
         top: Int,
-        right: Int,
-        bottom: Int,
+        rightOrWidth: Int,
+        bottomOrHeight: Int,
         listener: SORenderListenerInternal
     ): SORender?
 
@@ -50,19 +55,23 @@ open class SOPage(
         dispatchOnMainThread: Boolean = true
     ): SORender? {
         target.syncRect()
-        
+
+        val isV7a = SOLib.isV7a
+        val rightOrWidth  = if (isV7a) target.right - target.left else target.right
+        val bottomOrHeight = if (isV7a) target.bottom - target.top else target.bottom
+
         return nativeRenderAtZoom(
             layer,
             zoom,
             origin.x.toDouble(),
             origin.y.toDouble(),
             target.bitmap(),
-            target.bitmap().width, // Truyền bitmapWidth vào vị trí thứ 6
-            null,                  // Overlay = null ở vị trí thứ 7
+            target.bitmap().width,
+            null,
             target.left,
             target.top,
-            target.right,
-            target.bottom,
+            rightOrWidth,
+            bottomOrHeight,
             object : SORenderListenerInternal {
                 override fun progress(status: Int) {
                     if (dispatchOnMainThread) {

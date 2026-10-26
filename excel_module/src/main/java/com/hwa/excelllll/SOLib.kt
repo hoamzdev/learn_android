@@ -72,6 +72,9 @@ class SOLib private constructor() {
         @Volatile
         private var instance: SOLib? = null
 
+        /** Detect if we are running on armeabi-v7a. */
+        val isV7a = android.os.Build.SUPPORTED_ABIS[0].startsWith("armeabi-v7a")
+
         init {
             System.loadLibrary("abc")
             System.loadLibrary("c++_shared")

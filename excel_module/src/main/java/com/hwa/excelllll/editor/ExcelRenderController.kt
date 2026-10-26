@@ -89,13 +89,39 @@ class ExcelRenderController(
         val limits = cachedPage?.selectionLimits()
         if (limits != null && limits.getIsActive()) {
             lastStableLimits = limits
+            // Cập nhật lại tọa độ neo để đồng bộ với kích thước ô mới (ví dụ sau khi đổi font size)
+            updateStablePointsFromLimits(limits)
         }
         return limits
+    }
+
+    private fun updateStablePointsFromLimits(limits: SOSelectionLimits) {
+        val box = limits.getBox() ?: return
+        val start = selectionStart ?: return
+        val end = selectionEnd ?: return
+
+        if (start == end) {
+            // Đưa điểm neo về chính giữa ô mới
+            start.set((box.left + box.right) / 2f, (box.top + box.bottom) / 2f)
+        } else {
+            // Đối với vùng chọn, cập nhật lại 2 góc để giữ vùng bao chính xác
+            start.set(box.left + 1f, box.top + 1f)
+            end.set(box.right - 1f, box.bottom - 1f)
+        }
     }
 
     /** Commits and re-selects the LOCKED coordinates. */
     fun commitAndReselectCell(onComplete: () -> Unit): Boolean {
         val page = cachedPage ?: return false
+        
+        // Cập nhật lại tọa độ ổn định trước khi re-select. 
+        // Điều này cực kỳ quan trọng khi kích thước ô thay đổi (ví dụ: tăng font size),
+        // giúp điểm chạm (start/end) luôn nằm trong ô đã giãn nở.
+        val limits = page.selectionLimits()
+        if (limits != null && limits.getIsActive()) {
+            updateStablePointsFromLimits(limits)
+        }
+
         val start = selectionStart ?: return false
         val end = selectionEnd ?: return false
 
@@ -179,7 +205,11 @@ class ExcelRenderController(
         }
         val bufferIndex = if (displayedBufferIndex == 0) 1 else 0
         val soBitmap = renderBuffers[bufferIndex] ?: bitmapProvider.create(
-            createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+            createBitmap(
+                bitmapWidth,
+                bitmapHeight,
+                if (com.hwa.excelllll.SOLib.isV7a) Bitmap.Config.RGB_565 else Bitmap.Config.ARGB_8888
+            )
         ).also { renderBuffers[bufferIndex] = it }
         soBitmap.bitmap().eraseColor(android.graphics.Color.WHITE)
         

@@ -3,6 +3,7 @@ package com.hwa.excelllll
 import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.Keep
+import androidx.core.graphics.createBitmap
 
 @Keep
 open class SOBitmap(
@@ -19,7 +20,11 @@ open class SOBitmap(
     constructor(bitmap: Bitmap) : this(bitmap, 0, 0, bitmap.width, bitmap.height)
 
     constructor(width: Int, height: Int) : this(
-        Bitmap.createBitmap(width.coerceAtLeast(1), height.coerceAtLeast(1), Bitmap.Config.ARGB_8888)
+        createBitmap(
+            width.coerceAtLeast(1),
+            height.coerceAtLeast(1),
+            if (SOLib.isV7a) Bitmap.Config.RGB_565 else Bitmap.Config.ARGB_8888
+        )
     )
 
     constructor() : this(1, 1)

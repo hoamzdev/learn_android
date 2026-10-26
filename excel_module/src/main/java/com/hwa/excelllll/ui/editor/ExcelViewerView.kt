@@ -516,15 +516,19 @@ class ExcelViewerView @JvmOverloads constructor(
         // 1. Thực hiện lệnh Edit ngay lập tức
         action(controller)
 
-        // 2. Ép Native commit dữ liệu ô
-        pageHost?.commitAndReselectCell {
-            // 3. Quan trọng: Đợi một nhịp ngắn (60ms) để Native cập nhật Display Tree 
-            // trước khi thực hiện Refresh màn hình. Việc này sửa lỗi "nhấn 2 lần mới hiện".
-            postDelayed({
-                refresh()
-                dispatchSelectionChanged()
-            }, 60L)
-        }
+        // 2. Ép Native commit dữ liệu ô và re-select để cập nhật layout vùng chọn.
+        // Chạy sau một delay cực ngắn (20ms) để engine kịp ghi nhận thay đổi định dạng.
+        postDelayed({
+            pageHost?.commitAndReselectCell {
+                // 3. Đợi thêm một nhịp (60ms) để Native cập nhật xong Display Tree 
+                // sau khi re-select rồi mới thực hiện Refresh màn hình.
+                postDelayed({
+                    refresh {
+                        dispatchSelectionChanged()
+                    }
+                }, 60L)
+            }
+        }, 20L)
         
         return true
     }
